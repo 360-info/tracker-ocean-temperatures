@@ -1,0 +1,7 @@
+project:
+  type: website
+  output-dir: out
+  
+# only re-render if the source changes or if we specifically render that file
+execute:
+  freeze: auto

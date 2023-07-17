@@ -1,0 +1,20 @@
+# system files
+.DS_Store
+Thumbs.db
+
+# vscode
+.vscode
+
+# r
+/renv
+.Rhistory
+
+# web dev
+/node_modules
+
+# quarto
+/.quarto/
+
+# output folder (you may want to exclude files when we publish!)
+/out/*
+!/out

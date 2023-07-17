@@ -1,0 +1,33 @@
+---
+title: "Container test"
+author: "James Goldie"
+format: html
+---
+
+I love containers! So useful. Can we do R stuff in the rocker container? Let's see:
+
+```{r}
+#| label: rtest
+
+library(tibble)
+
+mydata <- tibble(x = 1:10, y = x^2)
+ojs_define(mydata)
+```
+
+And maybe an Observable chart too?
+
+```{ojs}
+//| label: somechart
+
+Plot.plot({
+  marks: [
+    Plot.barY(transpose(mydata), {
+      x: "x",
+      y: "y"
+    })
+  ]
+})
+```
+
+Great!

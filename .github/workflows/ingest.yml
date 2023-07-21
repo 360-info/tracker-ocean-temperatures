@@ -1,0 +1,83 @@
+
+# workflow to test sverto
+
+on:
+  # schedule:
+  #   - cron: '0 0 * * *'
+  workflow_dispatch:
+    inputs:
+      from_date:
+        description: "Only ingest observations from this date (format: yyyy-mm-dd). Defaults to start of 1852."
+        type: string
+        default: "1852-01-01"
+        required: false
+      to_date:
+        description: "Only ingest observations until this date (format: yyyy-mm-dd). Defaults to today's date."
+        type: string
+        required: false
+      overwrite:
+        description: "If true, overwrite existing observations. Default to false (add new obs only)."
+        type: boolean
+        default: false
+
+name: oceantemps-ingest
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: r-lib/actions/setup-r@v2
+      # - uses: r-lib/actions/setup-pandoc@v2
+
+      - name: Install Linux system dependencies
+        run: |
+          sudo apt update
+          sudo apt-get install libcurl4-openssl-dev
+          sudo apt-get install libssl-dev
+          sudo apt install nco  
+        # sudo apt install cdo
+      
+      - name: Restore packages with renv
+        shell: Rscript {0}
+        run: |
+          if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
+          renv::restore()
+
+      # set date as being 2 weeks ago 'til today if inputs aren't set
+      # (eg. when run on a cron schedule)
+
+      - name: Get current date
+        id: two_weeks_ago
+        run: echo "::set-output name=date::$(date -d '-14 days' +'%Y-%m-%d')"
+      
+      - name: Get date two weeks ago
+        id: today
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
+      - name: Run the analysis (scheduled update)
+        if: github.event_name == 'schedule'
+        run: |
+          analysis-oceantemps/ingest.r \
+            --from=${{ steps.two_weeks_ago.outputs.date}} \
+            --to=${{ steps.today.outputs.date }} \
+            --overwrite=true
+        shell: Rscript {0}
+
+      - name: Run the analysis (manual)
+        run: |
+          analysis-oceantemps/ingest.r \
+            --from=${{ inputs.from_date }} \
+            --to=${{ inputs.to_date || steps.today.outputs.date }} \
+            --overwrite=${{ inputs.overwrite }}
+        shell: Rscript {0}
+      
+      # commit and push
+      - name: Commit and push updated results
+        run: |
+          git add data/ocean-temps/*
+          git commit -m "Ingest new results via GitHub Actions"
+          git push origin main

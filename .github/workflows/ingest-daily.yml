@@ -20,7 +20,7 @@ on:
         type: boolean
         default: false
 
-name: oceantemps-ingest
+name: Ingest daily temperatures
 
 jobs:
   ingest:

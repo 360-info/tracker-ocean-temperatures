@@ -69,7 +69,7 @@ jobs:
 
       - name: Run the analysis (manual)
         run: |
-          analysis-oceantemps/ingest.r \
+          analysis-oceantemps/ingest-daily.r \
             --from=${{ inputs.from_date }} \
             --to=${{ inputs.to_date || steps.today.outputs.date }} \
             --overwrite=${{ inputs.overwrite }}

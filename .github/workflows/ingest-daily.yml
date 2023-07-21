@@ -61,7 +61,7 @@ jobs:
       - name: Run the analysis (scheduled update)
         if: github.event_name == 'schedule'
         run: |
-          analysis-oceantemps/ingest.r \
+          analysis-oceantemps/ingest-daily.r \
             --from=${{ steps.two_weeks_ago.outputs.date}} \
             --to=${{ steps.today.outputs.date }} \
             --overwrite=true

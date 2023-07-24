@@ -46,13 +46,12 @@ jobs:
         shell: Rscript {0}
       
       - name: Run the analysis (scheduled update)
-        if: github.event_name == 'schedule' && steps.check-update.outputs.stale
-        run: |
-          analysis-oceantemps/ingest-monthly.r \
-            --overwrite=true
+        if: github.event_name == 'schedule' && env.MONTHLY_IS_STALE
+        run: analysis-oceantemps/ingest-monthly.r --overwrite=true
         shell: Rscript {0}
 
       - name: Run the analysis (manual)
+        if: env.MONTHLY_IS_STALE || inputs.overwrite
         run: |
           analysis-oceantemps/ingest-monthly.r \
             --overwrite=${{ inputs.overwrite }}
@@ -61,6 +60,8 @@ jobs:
       # commit and push
       - name: Commit and push updated results
         run: |
+          git config --local user.name actions-user
+          git config --local user.email "actions@github.com"
           git add data/ocean-temps/*
           git commit -m "Ingest new results via GitHub Actions"
           git push origin main

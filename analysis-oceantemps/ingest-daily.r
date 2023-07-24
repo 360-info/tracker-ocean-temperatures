@@ -5,7 +5,9 @@
 # - --to=YYYY-MM-DD: last date from which to get observations
 # - --overwrite=[true|false]: if true, overwrite existing observations
 
-library(tidyverse)
+library(tibble)
+library(dplyr)
+library(purrr)
 library(collateral)
 library(glue)
 library(here)
@@ -26,10 +28,6 @@ args <- c(
 )
 
 # extract arg values and validate
-extract_arg <- function(args, pattern) {
-  str_extract(pattern, group = 1) |>
-  na.omit()
-}
 start_date <- args |> extract_arg("^--from=(\\d{4}\\-\\d{2}\\-\\d{2})")
 end_date   <- args |> extract_arg("^--to=(\\d{4}\\-\\d{2}\\-\\d{2})")
 overwrite  <- args |> extract_arg("^--overwrite=(true|false)")
@@ -109,6 +107,8 @@ tibble(
   map2_safely(remote_url, dest_file, download.file) ->
 downloads
 
+# TODO - check for unsuccessful downloads
 
+# TODO - process and save the downloads
 
 message("Done!")

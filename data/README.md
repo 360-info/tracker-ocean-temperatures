@@ -1,82 +1,8 @@
 
+# `RECCAP2_region_masks_all_v20221025.nc`
 
-`basinmask_04.msk.gz`:
+Masks for various ocean basins. In these files, each variable is an ocean. The variable is 0 for masked-out areas (eg. land or other oceans) or an integer greater than 0 for a region within the ocean. Each ocean is broken up into sub-regions (1, 2, 3, etc.).
 
-- docs: https://www.ncei.noaa.gov/data/oceans/woa/WOA13/DOC/woa13documentation.pdf
-- 04: quarter degree
-- we trimmed this down to the surface level basin-classifications and compressed with `xsv` and `gzip`:
+Masks are on a 1° by 1° grid, which is regridded to 0.25° by 0.25° to match the observations.
 
-```bash
-xsv select Latitude,Longitude,Basin_0m basinmask_04.msk > basinmask_04_surface.msk
-gzip basinmask_04_surface.msk
-```
-
-  > Contains the basin code number defined for each grid square at each 
-  > standard depth from the surface to 5500m. Each basin is identified by a code number that 
-  > ranges from 1 to 58. The basin code number in a given quarter-degree and one-degree square 
-  > may change with increased depth level. Appendix 1 lists the geographic basin names, the 
-  > code number associated with each basin, and the standard depth level at which the given 
-  > basin is first encountered.
-
-[WOA13 documentation](https://www.ncei.noaa.gov/data/oceans/woa/WOA13/DOC/woa13documentation.pdf), Appendix 1:
-
-| Number | Basin                        | Standard depth level | Can interact with adjacent basis |
-|--------|------------------------------|----------------------|--------------|
-| 1      | Atlantic Ocean               | 1                    | Yes          |
-| 2      | Pacific Ocean                | 1                    | Yes          |
-| 3      | Indian Ocean                 | 1                    | Yes          |
-| 4      | Mediterranean Sea            | 1                    | Yes          |
-| 5      | Baltic Sea                   | 1                    | No           |
-| 6      | Black Sea                    | 1                    | No           |
-| 7      | Red Sea                      | 1                    | No           |
-| 8      | Persian Gulf                 | 1                    | No           |
-| 9      | Hudson Bay                   | 1                    | No           |
-| 10     | Southern Ocean               | 1                    | Yes          |
-| 11     | Arctic Ocean                 | 1                    | No           |
-| 12     | Sea of Japan                 | 1                    | No           |
-| 13     | Kara Sea                     | 22                   | No           |
-| 14     | Sulu Sea                     | 25                   | No           |
-| 15     | Baffin Bay                   | 37                   | No           |
-| 16     | East Mediterranean           | 41                   | No           |
-| 17     | West Mediterranean           | 47                   | No           |
-| 18     | Sea of Okhotsk               | 47                   | No           |
-| 19     | Banda Sea                    | 55                   | No           |
-| 20     | Caribbean Sea                | 55                   | No           |
-| 21     | Andaman Basin                | 62                   | No           |
-| 22     | North Caribbean              | 67                   | No           |
-| 23     | Gulf of Mexico               | 67                   | No           |
-| 24     | Beaufort Sea                 | 77                   | No           |
-| 25     | South China Sea              | 77                   | No           |
-| 26     | Barents Sea                  | 77                   | No           |
-| 27     | Celebes Sea                  | 62                   | No           |
-| 28     | Aleutian Basin               | 77                   | No           |
-| 29     | Fiji Basin                   | 82                   | No           |
-| 30     | North American Basin         | 82                   | No           |
-| 31     | West European Basin          | 82                   | No           |
-| 32     | Southeast Indian Basin       | 82                   | No           |
-| 33     | Coral Sea                    | 82                   | No           |
-| 34     | East Indian Basin            | 82                   | No           |
-| 35     | Central Indian Basin         | 82                   | No           |
-| 36     | Southwest Atlantic Basin     | 82                   | No           |
-| 37     | Southeast Atlantic Basin     | 82                   | No           |
-| 38     | Southeast Pacific Basin      | 82                   | No           |
-| 39     | Guatemala Basin              | 82                   | No           |
-| 40     | East Caroline Basin          | 87                   | No           |
-| 41     | Marianas Basin               | 87                   | No           |
-| 42     | Philippine Sea               | 87                   | No           |
-| 43     | Arabian Sea                  | 87                   | No           |
-| 44     | Chile Basin                  | 87                   | No           |
-| 45     | Somali Basin                 | 87                   | No           |
-| 46     | Mascarene Basin              | 87                   | No           |
-| 47     | Crozet Basin                 | 87                   | No           |
-| 48     | Guinea Basin                 | 87                   | No           |
-| 49     | Brazil Basin                 | 92                   | No           |
-| 50     | Argentine Basin              | 92                   | No           |
-| 51     | Tasman Sea                   | 87                   | No           |
-| 52     | Atlantic Indian Basin        | 92                   | No           |
-| 53     | Caspian Sea                  | 1                    | No           |
-| 54     | Sulu Sea II                  | 37                   | No           |
-| 55     | Venezuela Basin              | 37                   | No           |
-| 56     | Bay of Bengal                | 1                    | Yes          |
-| 57     | Java Sea                     | 16                   | No           |
-| 58     | East Indian Atlantic Basin   | 97                   | No           |
+Masks are from [Fay, A. R., & McKinley, G. A. (2014)](https://doi.org/10.5194/essd-6-273-2014) via [the RECCAP2 project](https://github.com/RECCAP2-ocean/R2-shared-resources/) and are available [under Creative Commons Attribution 3.0](https://doi.pangaea.de/10.1594/PANGAEA.828650).

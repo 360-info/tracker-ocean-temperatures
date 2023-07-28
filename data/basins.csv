@@ -1,7 +1,7 @@
 name,mask_ocean,mask_regions
 Pacific Ocean,pacific,"1,2,3,4,5,6"
 North Pacific,pacific,"1,2,3"
-South Pacific,pacfic,"4,5,6"
+South Pacific,pacific,"4,5,6"
 Arctic Ocean,arctic,"1,2,3,4,5,6,7,8,9,10"
 Atlantic Ocean,atlantic,"1,2,3,4,5"
 North Atlantic,atlantic,"1,2,3"

@@ -39,12 +39,15 @@ jobs:
           if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
           renv::restore()
 
-      # this script returns TRUE/FALSE - i need to set-output from that
+      # sets env.MONTHLY_IS_STALE=TRUE if new obs are available
       - name: Check if update is required
         id: check-update
         run: analysis-oceantemps/check-monthly.r
         shell: Rscript {0}
       
+      # analysis sets env.MONTHLY_UPDATED=true and end.MONTHLY_UPDATE_TIME=...
+      # when it successfully runs
+
       - name: Run the analysis (scheduled update)
         if: github.event_name == 'schedule' && env.MONTHLY_IS_STALE
         run: analysis-oceantemps/ingest-monthly.r --overwrite=true
@@ -65,3 +68,18 @@ jobs:
           git add data/ocean-temps/*
           git commit -m "Ingest new results via GitHub Actions"
           git push origin main
+
+      - name: Update Slack
+        uses: slackapi/slack-github-action@v1.24.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          payload: |
+            {
+              "event_type": ${{ github.event_name }},
+              "run_end": ${{ end.MONTHLY_RUN_END }}
+              "outcome_emoji":
+                ${{ env.MONTHLY_IS_STALE ? '⏰' : env.MONTHLY_UPDATED ? '✅' : '❓' }},
+              "outcome_long": ${{ env.MONTHLY_IS_STALE ? 'Update skipped (no new obs)' : env.MONTHLY_UPDATED ? 'New observations ingested up to ' + env.MONTHLY_UPDATE_TIME : 'Workflow successfully executed, but R script did not sign off properly. Needs follow up. ' }}
+              "workflow_name": "Ocean data tracker: ingest-monthly"
+            }

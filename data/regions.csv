@@ -1,8 +1,0 @@
-name,id,lon_min,lon_max,lat_min,lat_max
-Nino1,nino1,-90,-80,-10,-5
-Nino2,nino2,-90,-80,0,5
-Nino3,nino3,-150,-90,-5,5
-Nino3.4,nino3.4,-170,-120,-5,5
-Nino4,nino4,160,-150,-5,5
-IOD west,iod_west,50,70,-10,10
-IOD east,iod_east,90,110,-10,0

@@ -10,8 +10,7 @@ library(here)
 
 #' Extract and validate arg values using a regex pattern
 extract_arg <- function(args, pattern) {
-  str_extract(pattern, group = 1) |>
-  na.omit()
+  args |> str_extract(pattern, group = 1) |> na.omit()
 }
 
 #' Returns a string recording the time of the last monthly update
@@ -38,32 +37,6 @@ get_current_monthly_dt <- function() {
     ymd_hm()
 }
 
-
-#' Return the path of a mask for a single region defined by a lon-lat box.
-#' 
-#' Regions used here are largely based on ENSO and IOD monitoring regions:
-#' http://www.bom.gov.au/climate/enso/indices.shtml
-#' 
-#' @param id The id for the region to be used as the netcdf variable name
-#' @param lon_min Longitude to start box from
-#' @param lon_max Longitude to end box at
-#' @param lat_min Latitude to start box from
-#' @param lat_max Latitude to end box at
-#' @param mask_path The path to the mask file
-#' @return Path to the created NetCDF
-make_lonlat_box_mask <- function(id, lon_min, lon_max, lat_min, lat_max,
-  mask_path) {
-  focusregion_path <- tempfile(pattern = "focusregion-", fileext = ".nc")
-  cdo(
-    "-L",
-    csl("chname", "seamask", id),
-    csl(glue("-sellonlatbox,{lon_min},{lon_max},{lat_min},{lat_max}")),
-    csl("-select", "name=seamask"),
-    mask_path,
-    focusregion_path)
-  return(focusregion_path)
-}
-
 #' Return the path of a mask file remapped to the grid of iven observations
 #' 
 #' Our masks are on a 1° grid, but our obs are 0.25°x0.25°. This function
@@ -71,43 +44,86 @@ make_lonlat_box_mask <- function(id, lon_min, lon_max, lat_min, lat_max,
 #'
 #' @param sst_path The path to an nc file with observed sea surface temps
 get_regridded_mask_path <- function(sst_path) {
-  mask_path <- here("data", "RECCAP2_region_masks_all_v20221025.nc")
+  source_mask_path <- here("data", "RECCAP2_region_masks_all_v20221025.nc")
+  hollowed_mask_path <- tempfile(pattern = "hollowed-masks-", fileext = ".nc")
   regridded_mask_path <- tempfile(pattern = "regrid-masks-", fileext = ".nc")
-  
-  # add other regions 
-  # regions <- read_csv(here("data", "regions.csv"))
-  # regions %>%
-  #   dplyr::select(-name) %>%
-  #   mutate(mask_path =
-  #     pmap_chr(., make_lonlat_box_mask, mask_path = mask_path)) ->
-  # region_paths
 
-  # merged_masks_path <- tempfile(pattern = "allmasks-", fileext = ".nc")
+  # regrid to the 0.25°x0.25° grid, and make 0 areas NaN
+  # (it won't chain for some reason)
+  cdo(csl("setctomiss", "0"), source_mask_path, hollowed_mask_path)
+  cdo(csl("remapnn", sst_path), hollowed_mask_path, regridded_mask_path)
 
-  # in theory i should be able to merge all of them in one step, but
-  # cdo is throwing an error unless i do them a few at a time
-  # i'll just generate a new temp file for each pair
-  # (WIP - this isn't working either!)
-
-  # cdo("merge", region_paths$mask_path[1], mask_path, merged_masks_path)
-
-  # for (i in seq_along(region_paths$mask_path) |> tail(-1)) {
-  #   masks_cumulative <- tempfile(pattern = "allmasks-cum-", fileext = ".nc")
-
-  #   cdo(
-  #     "cat",
-  #     region_paths$mask_path[i],
-  #     merged_masks_path,
-  #     masks_cumulative)
-    
-  #   unlink(merged_masks_path)
-  #   merged_masks_path <- masks_cumulative
-  # }
-
-  # regrid to the 0.25°x0.25° grid
-  cdo(csl("remapnn", sst_path), mask_path, regridded_mask_path)
-
+  unlink(hollowed_mask_path)
   return(regridded_mask_path)
+}
+
+#' Return the path of a mask for a single region defined by a lon-lat box.
+#' 
+#' Regions used here are largely based on ENSO and IOD monitoring regions:
+#' http://www.bom.gov.au/climate/enso/indices.shtml
+#' 
+#' @param lon_min Longitude to start box from
+#' @param lon_max Longitude to end box at
+#' @param lat_min Latitude to start box from
+#' @param lat_max Latitude to end box at
+#' @param mask_path The path to the mask file
+#' @return Path to the created NetCDF
+make_lonlat_box_mask <- function(lon_min, lon_max, lat_min, lat_max,
+  mask_path) {
+
+  # rename the seamask to sst, set it to NaN globally, then set the box to 1.0
+  boxmask_path <- tempfile(pattern = "boxmask-", fileext = ".nc")
+  cdo(
+    "-L",
+    csl("setclonlatbox", "1.0", lon_min, lon_max, lat_min, lat_max),
+    csl("-expr", "'sst = sst / 0'"),
+    csl("-chname", "seamask", "sst"),
+    csl("-select", "name=seamask"),
+    mask_path,
+    boxmask_path)
+  return(boxmask_path)
+}
+
+#' Returns a time series of field-averaged SSTs for the specified lon-lat box
+#' 
+#' @param lon_min Longitude to start box from
+#' @param lon_max Longitude to end box at
+#' @param lat_min Latitude to start box from
+#' @param lat_max Latitude to end box at
+#' @param sst_path The path to the downloaded sea surface temperatures (.nc)
+#' @param mask_path The path to the global mask file (.nc)
+#' @return A tibble with two columns: `date` and `temperature`
+extract_box_timeseries <- function(lon_min, lon_max, lat_min, lat_max,
+  sst_path, mask_path) {
+
+  message(paste("Extracting box: longitude", lon_min, "to", lon_max,
+    "latitude", lat_min, "to", lat_max))
+
+  # create a mask just for the lon-lat box (var: "seamask")
+  box_mask_path <- make_lonlat_box_mask(lon_min, lon_max, lat_min, lat_max,
+    mask_path)
+
+  # apply the mask to the sst obs
+  region_monthly_path <- tempfile(pattern = "maskedssts-", fileext = ".nc")
+  cdo("-mul", box_mask_path, sst_path, region_monthly_path)
+
+  # finally, calculate and output the time series
+  box_ts_path <- tempfile(pattern = "timeseries-", fileext = ".nc")
+  cdo("fldmean", region_monthly_path, box_ts_path)
+  series <- cdo(csl("outputtab", "date", "value"), box_ts_path)
+
+  # cleanup temp files (we're doing this a few times, so best to save on space)
+  
+  unlink(region_monthly_path)
+  unlink(box_ts_path)
+
+  # tidy the time series up and return
+  series |>
+    str_trim() |>
+    tibble(data = _) |>
+    slice(-1) |>
+    separate(data, into = c("date", "temperature"), sep = "\\s+",
+      convert = TRUE)
 }
 
 #' Returns a time series of field-averaged SSTs for the specified ocean region
@@ -120,7 +136,10 @@ get_regridded_mask_path <- function(sst_path) {
 #'   mask, separated by commas. Eg. "1,2,3"
 #' @param sst_path The path to the downloaded sea surface temperatures (.nc)
 #' @param mask_path The path to the mask file (.nc)
+#' @return A tibble with two columns: `date` and `temperature`
 extract_basin_timeseries <- function(ocean, regions, sst_path, mask_path) {
+
+  message(paste("Extracting", ocean, "basin, regions", regions))
 
   region <- str_split(regions, ",\\s?") |> unlist()
   region_expression <- glue("({ocean}=={region})") |> paste(collapse = " || ")
@@ -151,6 +170,14 @@ extract_basin_timeseries <- function(ocean, regions, sst_path, mask_path) {
     str_trim() |>
     tibble(data = _) |>
     slice(-1) |>
-    tidyr::separate(data, into = c("date", "value"), sep = "\\s+",
-      convert = TRUE)
+    separate(data, into = c("date", "temperature"), sep = "\\s+") |>
+    mutate(
+      date = as.Date(date),
+      temperature = as.numeric(temperature))
 }
+
+# calculate_baseline <- function(df, from = as.Date("1971-01-01"), to = as.Date("2000-12-31")) {
+#   df |>
+#     filter(between(date, from, to)) |>
+
+# }

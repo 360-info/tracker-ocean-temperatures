@@ -77,7 +77,7 @@ jobs:
           payload: |
             {
               "event_type": ${{ github.event_name }},
-              "run_end": ${{ end.MONTHLY_RUN_END }}
+              "run_end": ${{ env.MONTHLY_RUN_END }}
               "outcome_emoji":
                 ${{ env.MONTHLY_IS_STALE ? '⏰' : env.MONTHLY_UPDATED ? '✅' : '❓' }},
               "outcome_long": ${{ env.MONTHLY_IS_STALE ? 'Update skipped (no new obs)' : env.MONTHLY_UPDATED ? 'New observations ingested up to ' + env.MONTHLY_UPDATE_TIME : 'Workflow successfully executed, but R script did not sign off properly. Needs follow up. ' }}

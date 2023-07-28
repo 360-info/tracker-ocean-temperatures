@@ -20,9 +20,6 @@ select <- dplyr::select
 # extract start date and end date (YYYY-MM-DD) + option to overwrite from args
 args <- commandArgs(trailingOnly = TRUE)
 
-# test arguments
-args <- c("--overwrite=true")
-
 message("Testing workflow. Args are:")
 message(str(args))
 

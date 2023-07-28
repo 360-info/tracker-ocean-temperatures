@@ -15,14 +15,14 @@ extract_arg <- function(args, pattern) {
 
 #' Returns a string recording the time of the last monthly update
 get_last_monthly_update_dt <- function() {
-  here("data", "monthly", "last-monthly-update.txt") |>
+  here("data", "last-monthly-update.txt") |>
     readLines(last_update_path) |>
-    ymd_hm()
+    ymd_hms()
 }
 
 #' Writes the supplied date-time string out to record the last monthly update
 set_last_monthly_update_dt <- function(dt) {
-  dt |> writeLines(here("data", "monthly", "last-monthly-update.txt"))
+  dt |> writeLines(here("data", "last-monthly-update.txt"))
 }
 
 # scrape the current monthly update date-time from nasa psl
@@ -123,7 +123,10 @@ extract_box_timeseries <- function(lon_min, lon_max, lat_min, lat_max,
     tibble(data = _) |>
     slice(-1) |>
     separate(data, into = c("date", "temperature"), sep = "\\s+",
-      convert = TRUE)
+      convert = TRUE) |>
+    mutate(
+      date = as.Date(date),
+      temperature = round(as.numeric(temperature), 2))
 }
 
 #' Returns a time series of field-averaged SSTs for the specified ocean region
@@ -173,11 +176,5 @@ extract_basin_timeseries <- function(ocean, regions, sst_path, mask_path) {
     separate(data, into = c("date", "temperature"), sep = "\\s+") |>
     mutate(
       date = as.Date(date),
-      temperature = as.numeric(temperature))
+      temperature = round(as.numeric(temperature), 2))
 }
-
-# calculate_baseline <- function(df, from = as.Date("1971-01-01"), to = as.Date("2000-12-31")) {
-#   df |>
-#     filter(between(date, from, to)) |>
-
-# }

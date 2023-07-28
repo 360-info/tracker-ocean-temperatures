@@ -13,7 +13,9 @@ library(here)
 # uncomment and edit this line if you need to tell r where to find cdo
 Sys.setenv(PATH = paste(Sys.getenv("PATH"), "/opt/homebrew/bin", sep = ":"))
 
+# {ClimateOperators} masks dplyr::select, so put it back
 source(here("analysis-oceantemps", "util.r"))
+select <- dplyr::select
 
 # extract start date and end date (YYYY-MM-DD) + option to overwrite from args
 args <- commandArgs(trailingOnly = TRUE)
@@ -94,7 +96,7 @@ if (length(current_obs_paths) == 0) {
   basin_outputs <- basin_series
   box_outputs <- box_series
 } else {
-  message("Current obs found; loading to ")
+  message("Current obs found; loading and merging")
   # if there are current obs, load them
   current_obs_paths |>
     tibble() |>
@@ -103,7 +105,8 @@ if (length(current_obs_paths) == 0) {
       name_safe = str_remove(basename(path), ".csv"),
       series = map(path, read_csv, col_types = "Dd")) |>
     select(-path) |>
-    unnest_longer(series) ->
+    unnest_longer(series) |>
+    unpack(series) ->
   current_obs
 
   # merge current obs with new ones
@@ -124,29 +127,32 @@ if (length(current_obs_paths) == 0) {
 
   if (overwrite) {
     # if we're overwriting, preference new obs over current ones
+    message("Overwrite enabled; preferencing new obs over current ones")
+
     basin_joined |>
       mutate(temperature = coalesce(temperature_new, temperature_current)) |>
       select(name_safe, date, temperature) |>
-      nest(date, temperature) ->
+      nest(series = c(date, temperature)) ->
     basin_outputs
     
     box_joined |>
       mutate(temperature = coalesce(temperature_new, temperature_current)) |>
       select(name_safe, date, temperature) |>
-      nest(date, temperature) ->
+      nest(series = c(date, temperature)) ->
     box_outputs
   } else {
     # if we're not overwriting, preference current obs over new ones
+    message("Overwrite disabled; preferencing current obs over new ones")
     basin_joined |>
       mutate(temperature = coalesce(temperature_current, temperature_new)) |>
       select(name_safe, date, temperature) |>
-      nest(date, temperature) ->
+      nest(series = c(date, temperature)) ->
     basin_outputs
     
     box_joined |>
       mutate(temperature = coalesce(temperature_current, temperature_new)) |>
       select(name_safe, date, temperature) |>
-      nest(date, temperature) ->
+      nest(series = c(date, temperature)) ->
     box_outputs
   } 
 }
@@ -163,9 +169,8 @@ walk2(
 # --- Z. record the update time -----------------------------------------------
 
 new_update_time <- get_current_monthly_dt()
-set_last_monthly_update_dt(new_update_time)
+set_last_monthly_update_dt(as.character(new_update_time))
 
-message("Successfully updated!")
 system2("echo", c(
   "MONTHLY_UPDATED=true",
   ">>",
@@ -178,3 +183,4 @@ system2("echo", c(
   paste0("MONTHLY_RUN_END=", Sys.time()),
   ">>",
   "$GITHUB_ENV"))
+message("Successfully updated!")

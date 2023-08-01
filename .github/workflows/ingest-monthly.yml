@@ -31,7 +31,7 @@ jobs:
           sudo apt-get install libcurl4-openssl-dev
           sudo apt-get install libssl-dev
           sudo apt-get install libharfbuzz-dev libfribidi-dev
-          sudo apt install libgdal-dev
+          sudo apt install 
           sudo apt install nco  
         # sudo apt install cdo
       
@@ -41,23 +41,20 @@ jobs:
       # sets env.MONTHLY_IS_STALE=TRUE if new obs are available
       - name: Check if update is required
         id: check-update
-        run: analysis-oceantemps/check-monthly.r
-        shell: Rscript {0}
+        run: Rscript analysis-oceantemps/check-monthly.r
       
       # analysis sets env.MONTHLY_UPDATED=true and end.MONTHLY_UPDATE_TIME=...
       # when it successfully runs
 
       - name: Run the analysis (scheduled update)
         if: github.event_name == 'schedule' && env.MONTHLY_IS_STALE
-        run: analysis-oceantemps/ingest-monthly.r --overwrite=true
-        shell: Rscript {0}
+        run: Rscript analysis-oceantemps/ingest-monthly.r --overwrite=true
 
       - name: Run the analysis (manual)
         if: env.MONTHLY_IS_STALE || inputs.overwrite
         run: |
-          analysis-oceantemps/ingest-monthly.r \
+          Rscript analysis-oceantemps/ingest-monthly.r \
             --overwrite=${{ inputs.overwrite }}
-        shell: Rscript {0}
       
       # commit and push
       - name: Commit and push updated results

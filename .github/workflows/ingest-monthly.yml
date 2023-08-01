@@ -35,10 +35,7 @@ jobs:
         # sudo apt install cdo
       
       - name: Restore packages with renv
-        shell: Rscript {0}
-        run: |
-          if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
-          renv::restore()
+        uses: r-lib/actions/setup-renv@v2
 
       # sets env.MONTHLY_IS_STALE=TRUE if new obs are available
       - name: Check if update is required

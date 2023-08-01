@@ -5,9 +5,13 @@
 # - --to=YYYY-MM-DD: last date from which to get observations
 # - --overwrite=[true|false]: if true, overwrite existing observations
 
-library(tidyverse)
+library(readr)
+library(dplyr)
+library(tibble)
+library(tidyr)
 library(janitor)
 library(glue)
+library(purrr)
 library(here)
 
 # uncomment and edit this line if you need to tell r where to find cdo

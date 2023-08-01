@@ -9,6 +9,17 @@
     ]
   },
   "Packages": {
+    "ClimateOperators": {
+      "Source": "GitHub",
+      "Package": "ClimateOperators",
+      "Version": "0.3.2",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "ClimateOperators",
+      "RemoteUsername": "markpayneatwork",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "ceb3725dce7f61cddca10e8157fc09eed5572adc"
+    },
     "DBI": {
       "Source": "Repository",
       "Package": "DBI",
@@ -25,6 +36,12 @@
       "Source": "Repository",
       "Package": "RColorBrewer",
       "Version": "1.1-3",
+      "Repository": "CRAN"
+    },
+    "Rcpp": {
+      "Source": "Repository",
+      "Package": "Rcpp",
+      "Version": "1.0.11",
       "Repository": "CRAN"
     },
     "askpass": {
@@ -441,6 +458,12 @@
       "Version": "0.3.3",
       "Repository": "CRAN"
     },
+    "raster": {
+      "Source": "Repository",
+      "Package": "raster",
+      "Version": "3.6-23",
+      "Repository": "CRAN"
+    },
     "readr": {
       "Source": "Repository",
       "Package": "readr",
@@ -525,6 +548,12 @@
       "Version": "0.11.0",
       "Repository": "CRAN"
     },
+    "sp": {
+      "Source": "Repository",
+      "Package": "sp",
+      "Version": "2.0-0",
+      "Repository": "CRAN"
+    },
     "stringi": {
       "Source": "Repository",
       "Package": "stringi",
@@ -547,6 +576,12 @@
       "Source": "Repository",
       "Package": "systemfonts",
       "Version": "1.0.4",
+      "Repository": "CRAN"
+    },
+    "terra": {
+      "Source": "Repository",
+      "Package": "terra",
+      "Version": "1.7-39",
       "Repository": "CRAN"
     },
     "textshaping": {

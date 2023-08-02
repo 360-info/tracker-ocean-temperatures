@@ -167,6 +167,12 @@ walk2(
   box_outputs$series, box_outputs$name_safe,
   ~ write_csv(.x, here("data", "monthly", paste0(.y, ".csv"))))
 
+# now write all basins and boxes out as single csv
+basin_outputs |>
+  bind_rows(.id = "region") |>
+  bind_rows(bind_rows(box_outputs, .id = "region")) |>
+  write_csv(here("data", "monthly", "all.csv"))
+
 # --- Z. record the update time -----------------------------------------------
 
 new_update_time <- get_current_monthly_dt()

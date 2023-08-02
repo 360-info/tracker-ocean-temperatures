@@ -38,6 +38,11 @@ jobs:
       - name: Restore packages with renv
         uses: r-lib/actions/setup-renv@v2
 
+      # export cdo path so that r can find it
+      - name: Find cdo
+        run: |
+          echo "CDO_PATH=$(which cdo)" >> $GITHUB_ENV
+
       # sets env.MONTHLY_IS_STALE=TRUE if new obs are available
       - name: Check if update is required
         id: check-update

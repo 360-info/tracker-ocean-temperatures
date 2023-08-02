@@ -15,8 +15,10 @@ library(purrr)
 library(here)
 source(here("analysis-oceantemps", "util.r"))
 
-# uncomment and edit this line if you need to tell r where to find cdo
-# Sys.setenv(PATH = paste(Sys.getenv("PATH"), "/opt/homebrew/bin", sep = ":"))
+# set cdo path, as {ClimateOperators} usually can't find it on PATH properly
+# (default to homebrrew's version if we're not on github actions)
+cdo_path = Sys.getenv("CDO_PATH", "/opt/homebrew/bin")
+Sys.setenv(PATH = paste(Sys.getenv("PATH"), cdo_path, sep = ":"))
 
 # {ClimateOperators} masks dplyr::select, so put it back
 select <- dplyr::select

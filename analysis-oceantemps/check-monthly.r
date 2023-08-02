@@ -5,6 +5,9 @@ library(lubridate)
 library(here)
 source(here("analysis-oceantemps", "util.r"))
 
+# {ClimateOperators} masks dplyr::select, so put it back
+select <- dplyr::select
+
 #' Determine whether new monthly observations are available
 #' 
 #' @return A boolean. True if new obs are available for download, or if obs have

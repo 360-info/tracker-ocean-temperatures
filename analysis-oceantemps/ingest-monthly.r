@@ -13,12 +13,12 @@ library(janitor)
 library(glue)
 library(purrr)
 library(here)
+source(here("analysis-oceantemps", "util.r"))
 
 # uncomment and edit this line if you need to tell r where to find cdo
 Sys.setenv(PATH = paste(Sys.getenv("PATH"), "/opt/homebrew/bin", sep = ":"))
 
 # {ClimateOperators} masks dplyr::select, so put it back
-source(here("analysis-oceantemps", "util.r"))
 select <- dplyr::select
 
 # extract start date and end date (YYYY-MM-DD) + option to overwrite from args

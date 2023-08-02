@@ -1,4 +1,3 @@
-
 library(stringr)
 library(readr)
 library(rvest)
@@ -11,13 +10,6 @@ library(here)
 #' Extract and validate arg values using a regex pattern
 extract_arg <- function(args, pattern) {
   args |> str_extract(pattern, group = 1) |> na.omit()
-}
-
-#' Returns a string recording the time of the last monthly update
-get_last_monthly_update_dt <- function() {
-  here("data", "last-monthly-update.txt") |>
-    readLines() |>
-    ymd_hms()
 }
 
 #' Writes the supplied date-time string out to record the last monthly update

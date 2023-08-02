@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 # Quick precuror script to check whether the monhtly observations have been updated (around the 15th of the month)
 
 library(dplyr)

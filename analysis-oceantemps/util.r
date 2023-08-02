@@ -16,7 +16,7 @@ extract_arg <- function(args, pattern) {
 #' Returns a string recording the time of the last monthly update
 get_last_monthly_update_dt <- function() {
   here("data", "last-monthly-update.txt") |>
-    readLines(last_update_path) |>
+    readLines() |>
     ymd_hms()
 }
 

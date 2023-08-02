@@ -72,9 +72,9 @@ jobs:
         with:
           payload: |
             {
-              "event_type": ${{ github.event_name }},
-              "run_end": ${{ env.MONTHLY_RUN_END }}
-              "outcome_emoji": ${{ env.MONTHLY_IS_STALE && '⏰' || env.MONTHLY_UPDATED && '✅' || '❓' }},
-              "outcome_long": ${{ env.MONTHLY_IS_STALE && 'Update skipped (no new obs)' || env.MONTHLY_UPDATED && 'New observations ingested.' || 'Workflow successfully executed, but R script did not sign off properly. Needs follow up. ' }}
+              "event_type": "${{ github.event_name }}",
+              "run_end": "${{ env.MONTHLY_RUN_END }}",
+              "outcome_emoji": "${{ (!env.MONTHLY_IS_STALE) && '⏰' || env.MONTHLY_UPDATED && '✅' || '❓' }}",
+              "outcome_long": "${{ (!env.MONTHLY_IS_STALE) && 'Update skipped (no new obs)' || env.MONTHLY_UPDATED && 'New observations ingested.' || 'Workflow successfully executed, but R script did not sign off properly. Needs follow up.' }}",
               "workflow_name": "Ocean data tracker: ingest-monthly"
             }

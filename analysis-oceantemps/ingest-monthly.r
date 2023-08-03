@@ -18,6 +18,7 @@ source(here("analysis-oceantemps", "util.r"))
 # set cdo path, as {ClimateOperators} usually can't find it on PATH properly
 # (default to homebrrew's version if we're not on github actions)
 cdo_path = Sys.getenv("CDO_PATH", "/opt/homebrew/bin")
+message("CDO location to be used is ", cdo_path)
 Sys.setenv(PATH = paste(Sys.getenv("PATH"), cdo_path, sep = ":"))
 
 # {ClimateOperators} masks dplyr::select, so put it back
@@ -26,9 +27,6 @@ select <- dplyr::select
 # extract start date and end date (YYYY-MM-DD) + option to overwrite from args
 args <- commandArgs(trailingOnly = TRUE)
 
-message("Testing workflow. Args are:")
-message(str(args))
-
 # --- 1. process cmd line args ------------------------------------------------
 
 
@@ -36,7 +34,7 @@ overwrite <- args |> extract_arg("^--overwrite=(true|false)")
 
 stopifnot(
   "Error: specify whether to overwrite using --overwrite=[true|false]" =
-    length(overwrite)  == 1)
+    length(overwrite) == 1)
 
 # convert inputs
 overwrite <- as.logical(overwrite)
@@ -48,7 +46,7 @@ monthly_url <- paste0(
   "Datasets/noaa.oisst.v2.highres/",
   "sst.mon.mean.nc")
 monthly_path <- tempfile(pattern = "monthly-", fileext = ".nc")
-options(timeout = 1800)
+options(timeout = 10000)
 download.file(monthly_url, monthly_path)
 
 # check for unsuccessful downloads
@@ -99,7 +97,7 @@ if (length(current_obs_paths) == 0) {
   basin_outputs <- basin_series
   box_outputs <- box_series
 } else {
-  message("Current obs found; loading and merging")
+  message("Loading current obs")
   # if there are current obs, load them
   current_obs_paths |>
     tibble() |>
@@ -112,20 +110,21 @@ if (length(current_obs_paths) == 0) {
     unpack(series) ->
   current_obs
 
-  # merge current obs with new ones
+  # merge new obs with current ones
+  message("Merging current obs")
   
   basin_series |>
     unnest_longer(series) |>
     unpack(series) |>
     left_join(current_obs, c("name_safe", "date"),
-      suffix = c("_current", "_new")) ->
+      suffix = c("_new", "_current")) ->
   basin_joined
 
   box_series |>
     unnest_longer(series) |>
     unpack(series) |>
     left_join(current_obs, c("name_safe", "date"),
-      suffix = c("_current", "_new")) ->
+      suffix = c("_new", "_current")) ->
   box_joined
 
   if (overwrite) {
@@ -171,9 +170,18 @@ walk2(
 
 # now write all basins and boxes out as single csv
 basin_outputs |>
-  bind_rows(.id = "region") |>
-  bind_rows(bind_rows(box_outputs, .id = "region")) |>
-  write_csv(here("data", "monthly", "all.csv"))
+  unnest_longer(series) |>
+  unpack(series) ->
+basin_outputs_long
+box_outputs |>
+  unnest_longer(series) |>
+  unpack(series) ->
+box_outputs_long
+
+bind_rows(basin_outputs_long, box_outputs_long) |>
+  rename(region = name_safe) |>
+  arrange(region, date) |>
+  write_csv(here("data", "monthly-all.csv"))
 
 # --- Z. record the update time -----------------------------------------------
 

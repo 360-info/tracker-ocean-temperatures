@@ -42,6 +42,8 @@ jobs:
       - name: Find cdo
         run: |
           echo "CDO_PATH=$(which cdo)" >> $GITHUB_ENV
+      - name: Report cdo location
+        run: echo CDO location is $(which cdo)
 
       # sets env.MONTHLY_IS_STALE=TRUE if new obs are available
       - name: Check if update is required
@@ -66,7 +68,7 @@ jobs:
         run: |
           git config --local user.name actions-user
           git config --local user.email "actions@github.com"
-          git add data/monthly/*
+          git add data/*
           git commit -m "Ingest new results via GitHub Actions"
           git push
 

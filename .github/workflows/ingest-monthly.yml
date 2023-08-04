@@ -30,44 +30,49 @@ jobs:
           sudo apt update
           sudo apt-get install libcurl4-openssl-dev
           sudo apt-get install libssl-dev
+          sudo apt-get install libharfbuzz-dev libfribidi-dev
+          sudo apt install libgdal-dev
           sudo apt install nco  
-        # sudo apt install cdo
+          sudo apt install cdo
       
       - name: Restore packages with renv
-        shell: Rscript {0}
+        uses: r-lib/actions/setup-renv@v2
+
+      # export cdo path so that r can find it
+      - name: Find cdo
         run: |
-          if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
-          renv::restore()
+          echo "CDO_PATH=$(which cdo)" >> $GITHUB_ENV
+      - name: Report cdo location
+        run: echo CDO location is $(which cdo)
 
       # sets env.MONTHLY_IS_STALE=TRUE if new obs are available
       - name: Check if update is required
         id: check-update
-        run: analysis-oceantemps/check-monthly.r
-        shell: Rscript {0}
+        run: Rscript analysis-oceantemps/check-monthly.r
       
       # analysis sets env.MONTHLY_UPDATED=true and end.MONTHLY_UPDATE_TIME=...
       # when it successfully runs
 
       - name: Run the analysis (scheduled update)
         if: github.event_name == 'schedule' && env.MONTHLY_IS_STALE
-        run: analysis-oceantemps/ingest-monthly.r --overwrite=true
-        shell: Rscript {0}
+        run: Rscript analysis-oceantemps/ingest-monthly.r --overwrite=true
 
       - name: Run the analysis (manual)
         if: env.MONTHLY_IS_STALE || inputs.overwrite
         run: |
-          analysis-oceantemps/ingest-monthly.r \
+          Rscript analysis-oceantemps/ingest-monthly.r \
             --overwrite=${{ inputs.overwrite }}
-        shell: Rscript {0}
       
       # commit and push
       - name: Commit and push updated results
         run: |
           git config --local user.name actions-user
           git config --local user.email "actions@github.com"
-          git add data/ocean-temps/*
-          git commit -m "Ingest new results via GitHub Actions"
-          git push origin main
+          git add data/monthly/*
+          git add data/monthly-all.csv
+          git add data/last-monthly-update.txt
+          git diff-index --quiet HEAD ||commit -m "Ingest new results via GitHub Actions"
+          git push
 
       - name: Update Slack
         uses: slackapi/slack-github-action@v1.24.0
@@ -76,10 +81,9 @@ jobs:
         with:
           payload: |
             {
-              "event_type": ${{ github.event_name }},
-              "run_end": ${{ env.MONTHLY_RUN_END }}
-              "outcome_emoji":
-                ${{ env.MONTHLY_IS_STALE ? '⏰' : env.MONTHLY_UPDATED ? '✅' : '❓' }},
-              "outcome_long": ${{ env.MONTHLY_IS_STALE ? 'Update skipped (no new obs)' : env.MONTHLY_UPDATED ? 'New observations ingested up to ' + env.MONTHLY_UPDATE_TIME : 'Workflow successfully executed, but R script did not sign off properly. Needs follow up. ' }}
-              "workflow_name": "Ocean data tracker: ingest-monthly"
+              "event_type": "${{ github.event_name }}",
+              "run_end": "${{ env.MONTHLY_RUN_END }}",
+              "outcome_emoji": "${{ (!env.MONTHLY_IS_STALE) && '⏰' || env.MONTHLY_UPDATED && '✅' || '❓' }}",
+              "outcome_long": "${{ (!env.MONTHLY_IS_STALE) && 'Update skipped (no new obs)' || env.MONTHLY_UPDATED && 'New observations added!' || 'Workflow successfully executed, but the analysis script did not sign off properly. Something may not be right—this should be followed up.' }}",
+              "workflow_name": "Ocean data tracker: monthly ingest"
             }

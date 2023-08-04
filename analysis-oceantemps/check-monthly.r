@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 # Quick precuror script to check whether the monhtly observations have been updated (around the 15th of the month)
 
 library(dplyr)
@@ -5,20 +7,19 @@ library(lubridate)
 library(here)
 source(here("analysis-oceantemps", "util.r"))
 
-#' Scrape the update time for the monthly obs from nasa psl and compare against
-#' the time saved to disk.
-#' 
-#' @return A boolean indicating that newer observations are available.
-newer_obs_available <- function() {
-  return(get_current_monthly_dt() > get_last_monthly_update_dt())
-}
+# {ClimateOperators} masks dplyr::select, so put it back
+select <- dplyr::select
 
 #' Determine whether new monthly observations are available
 #' 
 #' @return A boolean. True if new obs are available for download, or if obs have
 #' never been downloaded
 check_remote_obs_stale <- function() {
-  (!file.exists(last_update_path)) || newer_obs_available()
+  last_update_path <- here("data", "last-monthly-update.txt")
+
+  (!file.exists(last_update_path)) ||
+    (get_current_monthly_dt() > (last_update_path |> readLines() |> ymd_hms())
+  )
 }
 
 is_stale <- check_remote_obs_stale()

@@ -5,23 +5,27 @@
 # - --to=YYYY-MM-DD: last date from which to get observations
 # - --overwrite=[true|false]: if true, overwrite existing observations
 
-library(tidyverse)
+library(readr)
+library(dplyr)
+library(tibble)
+library(tidyr)
 library(janitor)
 library(glue)
+library(purrr)
 library(here)
+source(here("analysis-oceantemps", "util.r"))
 
-# uncomment and edit this line if you need to tell r where to find cdo
-Sys.setenv(PATH = paste(Sys.getenv("PATH"), "/opt/homebrew/bin", sep = ":"))
+# set cdo path, as {ClimateOperators} usually can't find it on PATH properly
+# (default to homebrrew's version if we're not on github actions)
+cdo_path = Sys.getenv("CDO_PATH", "/opt/homebrew/bin")
+message("CDO location to be used is ", cdo_path)
+Sys.setenv(PATH = paste(Sys.getenv("PATH"), cdo_path, sep = ":"))
 
 # {ClimateOperators} masks dplyr::select, so put it back
-source(here("analysis-oceantemps", "util.r"))
 select <- dplyr::select
 
 # extract start date and end date (YYYY-MM-DD) + option to overwrite from args
 args <- commandArgs(trailingOnly = TRUE)
-
-message("Testing workflow. Args are:")
-message(str(args))
 
 # --- 1. process cmd line args ------------------------------------------------
 
@@ -30,7 +34,7 @@ overwrite <- args |> extract_arg("^--overwrite=(true|false)")
 
 stopifnot(
   "Error: specify whether to overwrite using --overwrite=[true|false]" =
-    length(overwrite)  == 1)
+    length(overwrite) == 1)
 
 # convert inputs
 overwrite <- as.logical(overwrite)
@@ -42,7 +46,7 @@ monthly_url <- paste0(
   "Datasets/noaa.oisst.v2.highres/",
   "sst.mon.mean.nc")
 monthly_path <- tempfile(pattern = "monthly-", fileext = ".nc")
-options(timeout = 1800)
+options(timeout = 10000)
 download.file(monthly_url, monthly_path)
 
 # check for unsuccessful downloads
@@ -93,7 +97,7 @@ if (length(current_obs_paths) == 0) {
   basin_outputs <- basin_series
   box_outputs <- box_series
 } else {
-  message("Current obs found; loading and merging")
+  message("Loading current obs")
   # if there are current obs, load them
   current_obs_paths |>
     tibble() |>
@@ -106,20 +110,21 @@ if (length(current_obs_paths) == 0) {
     unpack(series) ->
   current_obs
 
-  # merge current obs with new ones
+  # merge new obs with current ones
+  message("Merging current obs")
   
   basin_series |>
     unnest_longer(series) |>
     unpack(series) |>
     left_join(current_obs, c("name_safe", "date"),
-      suffix = c("_current", "_new")) ->
+      suffix = c("_new", "_current")) ->
   basin_joined
 
   box_series |>
     unnest_longer(series) |>
     unpack(series) |>
     left_join(current_obs, c("name_safe", "date"),
-      suffix = c("_current", "_new")) ->
+      suffix = c("_new", "_current")) ->
   box_joined
 
   if (overwrite) {
@@ -162,6 +167,21 @@ walk2(
 walk2(
   box_outputs$series, box_outputs$name_safe,
   ~ write_csv(.x, here("data", "monthly", paste0(.y, ".csv"))))
+
+# now write all basins and boxes out as single csv
+basin_outputs |>
+  unnest_longer(series) |>
+  unpack(series) ->
+basin_outputs_long
+box_outputs |>
+  unnest_longer(series) |>
+  unpack(series) ->
+box_outputs_long
+
+bind_rows(basin_outputs_long, box_outputs_long) |>
+  rename(region = name_safe) |>
+  arrange(region, date) |>
+  write_csv(here("data", "monthly-all.csv"))
 
 # --- Z. record the update time -----------------------------------------------
 

@@ -68,7 +68,9 @@ jobs:
         run: |
           git config --local user.name actions-user
           git config --local user.email "actions@github.com"
-          git add data/*
+          git add data/monthly/*
+          git add data/monthly-all.csv
+          git add data/last-monthly-update.txt
           git diff-index --quiet HEAD ||commit -m "Ingest new results via GitHub Actions"
           git push
 

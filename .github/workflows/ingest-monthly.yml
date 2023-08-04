@@ -69,7 +69,7 @@ jobs:
           git config --local user.name actions-user
           git config --local user.email "actions@github.com"
           git add data/*
-          git commit -m "Ingest new results via GitHub Actions"
+          git diff-index --quiet HEAD ||commit -m "Ingest new results via GitHub Actions"
           git push
 
       - name: Update Slack

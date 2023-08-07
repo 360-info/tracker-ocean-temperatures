@@ -1,0 +1,201 @@
+@import url("https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap");
+
+body {
+  font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+}
+
+a {
+  color: #36a7e9
+}
+
+a:visited {
+  color: #1481c9;
+}
+
+h1.title,
+p.subtitle {
+  text-transform: uppercase;
+  margin-block-start: 0;
+}
+
+h1.title {
+  font-weight: 900;
+  color: black;
+  margin-block-end: 0.2em;
+}
+
+p.subtitle {
+  font-weight: 700;
+  margin-block-end: 0;
+}
+
+
+header#title-block-header {
+  margin-block-end: 0.5rem;
+  z-index: 1000;
+}
+
+/* shrink header elements at lower widths */
+@media (max-width: 45em) {
+  header#title-block-header {
+    font-size: 90%;
+  }
+}
+
+@media (max-width: 34em) {
+  header#title-block-header {
+    font-size: 80%;
+  }
+}
+
+.embedcode {
+  font-size: small;
+  padding: 1em;
+  border-inline-start: 1px solid #36a7e9;
+  background-color: #36a7e911;
+  color: #36a7e9;
+}
+
+.embedcode pre {
+  margin: 0;
+}
+
+.embedcode code {
+  font-family: "Fira Code", monospace;
+  white-space: normal;
+}
+
+.inputForm {
+  z-index: 1000;
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  background-color: #ffffffcc;
+  color: black;
+  padding: 8px;
+  width: calc(100vw - 16px);
+  margin-bottom: 0;
+}
+
+.areaInputForm {
+  z-index: 1000;
+  position: absolute;
+  top: 100px;
+  left: calc(50% - 158px);
+  color: black;
+  padding: 2px 2px 0px 2px;
+  width: calc(100vw - 16px);
+  margin-bottom: 0;
+  width: 316px;
+  background: #ffffffcc;
+  /* border-radius: 8px; */
+  opacity: 1;
+  transition: all 0.5s ease-in-out;
+}
+
+.areaInputForm.hide {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.areaInputForm div + div {
+  margin-block-start: 10px;
+}
+
+/* inputs.select doesn't respect width option properly... */
+.areaInputForm select, .areaInputForm form input, .areaInputForm button, .areaInputForm p {
+  width: 300px;
+  position: relative;
+  left: 6px;
+  border: none;
+  margin: 0;
+}
+
+.areaInputForm select, .areaInputForm form input {
+  background: none;
+  color: black;
+}
+
+.areaInputForm form input {
+  border-bottom: 1px solid black;
+}
+
+.areaInputForm button {
+  background: #36a7e9;
+  color: white !important;
+  padding: 10px 0;
+  border-radius: 8px;
+  box-shadow: 0px 5px 5px #00000022;
+  margin-bottom: 10px;
+}
+.areaInputForm p {
+  margin-bottom: 10px;
+}
+
+.areaInputForm input::placeholder {
+  color: black;
+}
+
+/* ... and the "results" part of the text input still reserves space :( */
+.areaInputForm form output {
+  flex: 0;
+}
+
+.focusPanel {
+  z-index: 1000;
+  position: absolute;
+  top: 150px;
+  background-color: #ffffffcc;
+  color: black;
+  padding: 8px;
+  width: calc(100vw - 16px);
+  margin-bottom: 0;
+}
+
+.map-popup {
+  max-width: 200px;
+  font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1rem;
+}
+
+/* style info box when you zoom in */
+#modal-focused-postcode-content {
+  text-align: center;
+}
+
+#modal-focused-postcode-content h3 {
+  text-transform: uppercase;
+}
+
+#modal-focused-postcode-content p {
+  color: #666666;
+  font-size: 75%;
+}
+
+#modal-focused-postcode-content p .projection-range {
+  font-size: 200%;
+  font-weight: 900;
+  color: black;
+}
+
+#modal-focused-postcode-content p .projection-range.projection-recent {
+  color: #36a7e9;
+}
+
+#modal-focused-postcode-content p .projection-range.projection-medium {
+  color: orange;
+}
+
+#modal-focused-postcode-content p .projection-range.projection-high {
+  color: firebrick;
+}
+
+/* projection detail: show either a warning or modal content */
+#no-projections, #projection-content {
+  display: none;
+}
+
+#no-projections.show, #projection-content.show {
+  display: block;
+}

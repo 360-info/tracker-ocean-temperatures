@@ -194,8 +194,10 @@ Plot.plot({
       })
   ],
   y: {
-    label: showTemps ? "↑ Temperature" : "↑ Temperature anomaly",
-    // tickFormat: (d) => `${d3.format("+.1f")(d)} °C`
+    label: showTemps ?
+      "↑ Temperature" :
+      "↑ Temperature compared to " + baselineStart + "–" + baselineEnd +
+        " average",
     tickFormat: (d) => showTemps ?
       `${d3.format("-.1f")(d)} °C` :
       `${d3.format("+.1f")(d)} °C`

@@ -206,15 +206,17 @@ Plot.plot({
   ],
   y: {
     label: showAnomalies.includes("anomalies") ?
-      "Temperature compared to " + baselineStart + "–" + baselineEnd +
-        " baseline" :
+      "Temperature (compared to " + baselineStart + "–" + baselineEnd +
+        " baseline)" :
       "Temperature",
+    labelArrow: "none",
     tickFormat: (d) => showAnomalies.includes("anomalies") ?
       `${d3.format("+.1f")(d)} °C` :
       `${d3.format("-.1f")(d)} °C`
   },
   x: {
-    label: "Year"
+    label: "Year",
+    labelArrow: "none"
   },
   color: {
     domain: [true, false],

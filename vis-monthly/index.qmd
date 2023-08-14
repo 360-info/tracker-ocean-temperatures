@@ -171,9 +171,6 @@ windowSize = 15
 
 Plot.plot({
   marks: [
-    // Plot.tip(selectedSeries, {
-    //   title: d => `In ${d.year}, the temperature was ${d.temperature}°C`
-    // }),
     // if original temps: show line and smoother
     showAnomalies.includes("anomalies") ? null :
       Plot.lineY(selectedSeries, {
@@ -182,7 +179,8 @@ Plot.plot({
         stroke: "lightgrey",
         strokeWidth: 1,
         tip: true,
-        title: d => `${selectedPeriodLabel} ${d.year}\n${d3.format("-.2f")(d.temperature)} °C\n\n${d3.format("+.2f")(d.anomaly)} °C compared to\n1986-2015 baseline`
+        title: d => `${selectedPeriodLabel} ${d.year}\n${d3.format("-.2f")(d.temperature)} °C\n\n${d3.format("+.2f")(d.anomaly)} °C compared to\n1986-2015 baseline`,
+        ariaDescription: d => `For ${selectedPeriodLabel} ${d.year}, the temperature was ${d3.format("-.2f")(d.temperature)} °C, or ${d3.format("+.2f")(d.anomaly)} °C compared to the 1986-2015 baseline.`
       }),
     showAnomalies.includes("anomalies") ? null :
       Plot.lineY(selectedSeries, Plot.windowY(windowSize, {
@@ -190,7 +188,8 @@ Plot.plot({
         y: showAnomalies.includes("anomalies") ? "anomaly" : "temperature",
         stroke: "black",
         tip: true,
-        title: d => `${selectedPeriodLabel} ${d.year}\n${d3.format("-.2f")(d.temperature)} °C\n\n${d3.format("+.2f")(d.anomaly)} °C compared to\n1986-2015 baseline`
+        title: d => `${selectedPeriodLabel} ${d.year}\n${d3.format("-.2f")(d.temperature)} °C\n\n${d3.format("+.2f")(d.anomaly)} °C compared to\n1986-2015 baseline`,
+        ariaDescription: d => `For ${selectedPeriodLabel} ${d.year}, the temperature was ${d3.format("-.2f")(d.temperature)} °C, or ${d3.format("+.2f")(d.anomaly)} °C compared to the 1986-2015 baseline.`
       })),
     // if anomalies: show bars, shaded by sign
     showAnomalies.includes("anomalies") ? Plot.ruleY([0]) : null,
@@ -201,7 +200,8 @@ Plot.plot({
         fill: "anomalySign",
         interval: d3.utcYear,
         tip: true,
-        title: d => `${selectedPeriodLabel} ${d.year}\n${d3.format("-.2f")(d.temperature)} °C\n\n${d3.format("+.2f")(d.anomaly)} °C compared to\n1986-2015 baseline`
+        title: d => `${selectedPeriodLabel} ${d.year}\n${d3.format("-.2f")(d.temperature)} °C\n\n${d3.format("+.2f")(d.anomaly)} °C compared to\n1986-2015 baseline`,
+        ariaDescription: d => `For ${selectedPeriodLabel} ${d.year}, the temperature was ${d3.format("-.2f")(d.temperature)} °C, or ${d3.format("+.2f")(d.anomaly)} °C compared to the 1986-2015 baseline.`
       }) : null
   ],
   y: {

@@ -1,0 +1,68 @@
+<!-- initialise miromodal.js -->
+
+```{ojs}
+//| include: false
+micro = require("micromodal@0.4.10")
+micro.init({
+  awaitOpenAnimation: true,
+  awaitCloseAnimation: true
+});
+```
+
+::::::: {#modal-useremix .modal .micromodal-slide aria-hidden="true"}
+:::::: {.modal__overlay tabindex="-1" data-micromodal-close="true"}
+::::: {.modal__container role="dialog" aria-modal="true" aria-labelledby="modal-useremix-title"}
+
+<button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+
+:::: {#modal-useremix-content}
+## Use + Remix
+
+These charts, as well as the analyses that underpin them, are available under a [**Creative Commons Attribution 4.0 licence**](https://creativecommons.org/licenses/by/4.0).
+
+Please acknowledge [360info](https://360info.org) and our data sources when you use these charts and data.
+
+#### Embed this chart in your article
+
+Copy and paste the following code:
+
+::: {.embedcode}
+```
+{{< meta 360embed.before >}}{{< meta 360embed.url >}}{{< meta 360embed.after >}}
+```
+
+:::
+
+This content is subject to [360info's Terms of Use](https://newshub.360info.org/page/terms).
+
+#### Get the data and code
+
+Visit the [GitHub repository](https://github.com/360-info/report-template/tree/main/data) to:
+
+* [**Download the data**](https://github.com/360-info/report-template/tree/main/data)
+* [**Recreate or remix the chart**](https://github.com/360-info/report-template)
+::::
+
+:::::
+::::::
+:::::::
+
+<!-- notes dialog -->
+
+::::::: {#modal-about .modal .micromodal-slide aria-hidden="true"}
+:::::: {.modal__overlay tabindex="-1" data-micromodal-close="true"}
+::::: {.modal__container role="dialog" aria-modal="true" aria-labelledby="modal-about-title"}
+
+<button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+
+<header>
+## About {#modal-about-title}
+</header>
+
+:::: {#modal-about-content}
+This is a great place to add some more notes on the data!
+::::
+
+:::::
+::::::
+:::::::

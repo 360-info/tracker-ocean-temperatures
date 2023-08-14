@@ -53,8 +53,6 @@ allRegions = allData
   .select("region")
   .dedupe()
   .array("region")
-  .filter(d => !(["global_85s_to_85n", "iod_east", "iod_west", "nino1", "nino2",
-    "nino3", "nino3_4", "nino4"].includes(d)))
 
 allRegionsMap = new Map(allRegions.map(d => [regionFormatter(d), d]))
 ```

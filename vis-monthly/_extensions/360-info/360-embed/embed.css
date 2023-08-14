@@ -199,3 +199,28 @@ header#title-block-header {
 #no-projections.show, #projection-content.show {
   display: block;
 }
+
+
+/* inline controls along top */
+
+#controls {
+  margin-bottom: 1em;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-width: 800px;
+  gap: 5px 10px;
+  width: calc(100vw - 160px);
+}
+
+@media (max-width: 45em) {
+  #controls {
+    font-size: 90%;
+  }
+}
+
+@media (max-width: 34em) {
+  #controls {
+    font-size: 80%;
+  }
+}

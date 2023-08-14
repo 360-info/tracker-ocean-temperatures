@@ -36,46 +36,55 @@ allData = aq.loadCSV(dataPath, {
 
 // format regions in title case with underscores replaced by spaces
 function regionFormatter(str) {  
-    return str.replaceAll("_", " ").replace(/\w\S*/g,  
-    function (txt) {  
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();  
-    });  
+    return str
+      .replaceAll("_", " ")
+      .replace(/\w\S*/g,  
+        function (txt) {  
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();  
+        })
+      .replaceAll("60s To 60n", "(excl. polar regions)")
+      .replaceAll("Of", "of")
+      .replaceAll("And ", "and ")
 }
 
 // get a map of unique region names in the data for the dropdown menu
-allRegions = allData.select("region").dedupe().array("region")
+// (remove a few that we don't want to show in this version)
+allRegions = allData
+  .select("region")
+  .dedupe()
+  .array("region")
+  .filter(d => !(["global_85s_to_85n", "iod_east", "iod_west", "nino1", "nino2",
+    "nino3", "nino3_4", "nino4"].includes(d)))
+
 allRegionsMap = new Map(allRegions.map(d => [regionFormatter(d), d]))
 ```
 
 ```{ojs}
 //| label: controls
 
-viewof selectedRegion = Inputs.select(allRegionsMap, { label: "Region" })
+viewof selectedRegion = Inputs.select(allRegionsMap)
 
+calendarMonths = [
+  "January", "February", "March", "April", "May", "June", "July", "August",
+  "September", "October", "November", "December"]
 possibleMonths = new Map([
-  ["Jan", [1]],
-  ["Feb", [2]],
-  ["Mar", [3]],
-  ["Apr", [4]],
-  ["May", [5]],
-  ["Jun", [6]],
-  ["Jul", [7]],
-  ["Aug", [8]],
-  ["Sep", [9]],
-  ["Oct", [10]],
-  ["Nov", [11]],
-  ["Dec", [12]],
-  ["Annual", [0]],
-  ["All months", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]],
-])
+  ["Yearly average", 0], ...calendarMonths.map((d, i) => [d, i + 1])])
 
-viewof selectedPeriod = Inputs.select(possibleMonths)
+previousMonth = (new Date()).getMonth()
+defaultMonth = (previousMonth) == 0 ? 12 : previousMonth
+viewof selectedPeriod = Inputs.select(possibleMonths, {
+  value: defaultMonth
+})
 
-viewof showOriginalTemp = Inputs.checkbox(
-  ["Show original temperature"], {
-    value: "Show original temperature"
-  }
-)
+// this feels overwrought
+selectedPeriodLabel = selectedPeriod >= 1 ?
+  calendarMonths[selectedPeriod - 1] :
+  "Yearly average"
+
+viewof showAnomalies = Inputs.checkbox(
+  new Map([["Compare to the 1986–2015 baseline", "anomalies"]]), {
+    value: ["anomalies"]
+  })
 
 ```
 
@@ -112,8 +121,7 @@ regionData = allData
   })
   .ungroup()
 
-filteredData = regionData
-  .filter(d => op.includes(selectedPeriod, d.month))
+filteredData = regionData.filter(d => selectedPeriod == d.month)
 
 // separately calculate annual data if that's selected
 // (drop incomplete years, and calculate a baseline if the data allows)
@@ -151,59 +159,62 @@ annualTemps = regionData
 //| label: vis-data
 
 // plot either monthly or annual data based on period selection
-selectedSeries = selectedPeriod[0] == 0 ?
-  annualTemps :
-  filteredData
+selectedSeries = selectedPeriod == 0 ? annualTemps : filteredData
 
 // some options for conditionally showing parts of the chart:
 // - whether to show original temps or anomalies
 // - the window size to use for smoothing
-showTemps = showOriginalTemp.includes("Show original temperature")
+// showTemps = showAnomalies.includes("anomalies")
 
-// window size in _years_ (* 15 if it's all months)
-isAllMonths = selectedPeriod.length == 12 
-windowSize = isAllMonths ? 15 * 12 : 15
+// window size in _years_
+windowSize = 15
 
 Plot.plot({
   marks: [
+    // Plot.tip(selectedSeries, {
+    //   title: d => `In ${d.year}, the temperature was ${d.temperature}°C`
+    // }),
     // if original temps: show line and smoother
-    showTemps ?
+    showAnomalies.includes("anomalies") ? null :
       Plot.lineY(selectedSeries, {
         x: "date",
-        y: showTemps ? "temperature" : "anomaly",
+        y: showAnomalies.includes("anomalies") ? "anomaly" : "temperature",
         stroke: "lightgrey",
         strokeWidth: 1,
-        tip: true
-      }) : null,
-    showTemps ? 
+        tip: true,
+        title: d => `${selectedPeriodLabel} ${d.year}\n${d3.format("-.2f")(d.temperature)} °C\n\n${d3.format("+.2f")(d.anomaly)} °C compared to\n1986-2015 baseline`
+      }),
+    showAnomalies.includes("anomalies") ? null :
       Plot.lineY(selectedSeries, Plot.windowY(windowSize, {
         x: "date",
-        y: showTemps ? "temperature" : "anomaly",
+        y: showAnomalies.includes("anomalies") ? "anomaly" : "temperature",
         stroke: "black",
-        tip: true
-      })) : null,
+        tip: true,
+        title: d => `${selectedPeriodLabel} ${d.year}\n${d3.format("-.2f")(d.temperature)} °C\n\n${d3.format("+.2f")(d.anomaly)} °C compared to\n1986-2015 baseline`
+      })),
     // if anomalies: show bars, shaded by sign
-    showTemps ? null : Plot.ruleY([0]),
-    showTemps ? null :
+    showAnomalies.includes("anomalies") ? Plot.ruleY([0]) : null,
+    showAnomalies.includes("anomalies") ?
       Plot.rectY(selectedSeries, {
         x: "date",
         y: "anomaly",
         fill: "anomalySign",
-        interval: isAllMonths ? d3.utcMonth : d3.utcYear,
-        tip: true
-      })
+        interval: d3.utcYear,
+        tip: true,
+        title: d => `${selectedPeriodLabel} ${d.year}\n${d3.format("-.2f")(d.temperature)} °C\n\n${d3.format("+.2f")(d.anomaly)} °C compared to\n1986-2015 baseline`
+      }) : null
   ],
   y: {
-    label: showTemps ?
-      "↑ Temperature" :
-      "↑ Temperature compared to " + baselineStart + "–" + baselineEnd +
-        " average",
-    tickFormat: (d) => showTemps ?
-      `${d3.format("-.1f")(d)} °C` :
-      `${d3.format("+.1f")(d)} °C`
+    label: showAnomalies.includes("anomalies") ?
+      "Temperature compared to " + baselineStart + "–" + baselineEnd +
+        " baseline" :
+      "Temperature",
+    tickFormat: (d) => showAnomalies.includes("anomalies") ?
+      `${d3.format("+.1f")(d)} °C` :
+      `${d3.format("-.1f")(d)} °C`
   },
   x: {
-    label: "Year →"
+    label: "Year"
   },
   color: {
     domain: [true, false],

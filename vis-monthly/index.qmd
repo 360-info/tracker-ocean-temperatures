@@ -4,11 +4,12 @@ format:
   360-embed-html: default
 360embed:
   before: |
-    &lt;iframe allow=&quot;fullscreen&quot; allowfullscreen=&quot;true&quot; src=&quot;
-  # uncomment and modify this line for production
-  # url: https://feb2023.360info-heatmaps-narclim.pages.dev/news/
+    &lt;div style=&quot;position:relative; padding-bottom: 70%&quot;&gt;
+    &lt;iframe allow=&quot;fullscreen; clipboard-write self https://aug2023.360info-tracker-ocean-temperatures.pages.dev&quot; allowfullscreen=&quot;true&quot; src=&quot;
+  url: https://aug2023.360info-tracker-ocean-temperatures.pages.dev/vis-monthly/
   after: |
-    &quot; title=&quot;Interactive: future heat&quot; style=&quot;width:100%; height:500px; border:none; background-color: white;&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt;
+    &quot; title=&quot;Interactive: ocean temperatures&quot; style=&quot;width:100%; height:100%; position: absolute; top: 0; left: 0; border:none; background-color: white;&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt;&gt;
+    &lt;/div&gt;
 ---
 
 {{< include _popup-buttons.qmd >}}

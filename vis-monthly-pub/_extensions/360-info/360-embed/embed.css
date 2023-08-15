@@ -224,3 +224,11 @@ header#title-block-header {
     font-size: 80%;
   }
 }
+
+/* source code blocks and ojs errors often flash in temporarily as promises are
+   resolved (for error reporting purposes). for embeds in production we hide
+   them (same style that is applied to them when the promises are resolved)
+   to prevent the flash. you should probably comment this out for dev */
+.sourceCode {
+  display: none !important;
+}

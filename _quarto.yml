@@ -1,4 +1,8 @@
 project:
-  type: website
   output-dir: out
-  
+  type: website
+  resources: assets
+website:
+  twitter-card: true
+  open-graph: true
+  site-url: https://aug2023.360info-tracker-ocean-temperatures.pages.dev

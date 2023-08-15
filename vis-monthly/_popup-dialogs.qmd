@@ -20,7 +20,7 @@ micro.init({
 
 These charts, as well as the analyses that underpin them, are available under a [**Creative Commons Attribution 4.0 licence**](https://creativecommons.org/licenses/by/4.0).
 
-Please acknowledge [360info](https://360info.org) and our data sources when you use these charts and data.
+The data comes from [NOAA PSL](https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.highres.html) and [Fay & McKinley (2014)](https://doi.org/10.5194/essd-6-273-2014). Please acknowledge [360info](https://360info.org) and our data sources when you use these charts and data.
 
 #### Embed this chart in your article
 
@@ -37,10 +37,10 @@ This content is subject to [360info's Terms of Use](https://newshub.360info.org/
 
 #### Get the data and code
 
-Visit the [GitHub repository](https://github.com/360-info/report-template/tree/main/data) to:
+Visit the [GitHub repository](https://github.com/360-info/tracker-ocean-temperatures/tree/main/data) to:
 
-* [**Download the data**](https://github.com/360-info/report-template/tree/main/data)
-* [**Recreate or remix the chart**](https://github.com/360-info/report-template)
+* [**Download the live data**](https://github.com/360-info/tracker-ocean-temperatures/tree/main/data)
+* [**Recreate or remix the chart**](https://github.com/360-info/tracker-ocean-temperatures)
 ::::
 
 :::::
@@ -56,11 +56,19 @@ Visit the [GitHub repository](https://github.com/360-info/report-template/tree/m
 <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
 
 <header>
-## About {#modal-about-title}
+## About this ocean temperature tracker {#modal-about-title}
 </header>
 
 :::: {#modal-about-content}
-This is a great place to add some more notes on the data!
+This chart tracks the average temperatures at the sea surface. The dataset we use is [OISST v2](https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.highres.html), created by [National Oceanic and Atmospheric Administration's](https://noaa.gov/) [Physical Sciences Laboratory](https://psl.noaa.gov/).
+
+OISST updates both daily and monthly (we show the monthly updates here). The dataset [blends sea surface temperature observations](https://www.ncei.noaa.gov/products/optimum-interpolation-sst) from satellites, ships, buoys and Argo floats (small submersibles that patrol the oceans, dipping below the surface periodically to measure the deep ocean). These observations are compared using their strengths and weaknesses to fill out the Earth's surface.
+
+In this chart, you can choose which month of the year to focus on (or to look at the yearly average), as well as which ocean or sea to focus on. In this version, we have observations for the major oceans, as well as the Mediterranean Sea, the Bay of Bengal and Andaman Sea and the global average (both excluding polar regions and running up to 85°). We also have several climate monitoring regions used to measure phenomena like the El Niño Southern Oscillation (ENSO) and the Indian Ocean Dipole.
+
+In order to choose the ocean regions, we rely on the [RECCAP2-ocean project](https://github.com/RECCAP2-ocean), which uses ocean "masks" published by [Fay & McKinley (2014)](https://doi.org/10.5194/essd-6-273-2014) under Creative Commons Attribution 3.0 ([CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)). These regions are slightly different to those used by NOAA, so you may see small differences reported when comparing against other datasets.
+
+We also use a slightly more recent "baseline" (1986-2015) than some other dataets, as this dataset begins in the early 1980s. The baseline chosen affects the actual numbers reported but not the trends you see. You can see the actual temperatures by hovering over the bars or by tapping the checkbox to toggle them on.
 ::::
 
 :::::

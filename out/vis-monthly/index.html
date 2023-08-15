@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-99.9.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Ocean temperatures</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script type="module" src="../site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="../site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="_extensions/360-info/360-embed/embed.css">
+<link rel="stylesheet" href="_extensions/360-info/360-embed/modal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
+</head>
+
+<body>
+
+
+<header id="title-block-header">
+<h1 class="title">Ocean temperatures</h1>
+
+</header>
+
+<div class="modalpanel">
+<div class="modalpanelitems">
+<!-- check https://icons.getbootstrap.com for icons! -->
+
+<a href="#" data-micromodal-trigger="modal-useremix" aria-label="Share dialog" role="button" tabindex="0">
+  <i class="bi bi-share-fill"></i>
+</a>
+
+<a href="#" data-micromodal-trigger="modal-about" aria-label="More information" role="button" tabindex="0">
+  <i class="bi bi-info-circle-fill"></i>
+</a>
+
+<a id="fullscreenButton" aria-label="Fullscreen" role="button" href="#" tabindex="0">
+  <span class="fsoff">
+    <i class="bi bi-arrows-fullscreen"></i>
+  </span>
+</a>
+
+<!-- full screen button script -->
+<script>
+  window.addEventListener("load", () => {
+    document.querySelector("#fullscreenButton").addEventListener("click", e => {
+      e.preventDefault();
+      console.log("FS button clicked!");
+
+      var fsBtn = document.querySelector("#fullscreenButton");
+
+      if (fsBtn.classList.contains("fsmode")) {
+        // fullscreen is on: disable it
+        document.exitFullscreen();
+        fsBtn.classList.remove("fsmode")
+      } else {
+        // fullscreen is off: enable it
+        var rootEl = document.documentElement;
+
+        var requestMethod =
+          rootEl.requestFullScreen ||
+          rootEl.webkitRequestFullScreen ||
+          rootEl.mozRequestFullScreen ||
+          rootEl.msRequestFullScreen;
+
+          if (requestMethod) {
+            requestMethod.call(rootEl);
+            fsBtn.classList.add("fsmode");
+          } else {
+            alert("Fullscreen mode isn't supported on this browser.")
+          }
+      }
+    });
+  })
+</script>
+</div>
+<!-- if there's room here, put credits on two lines:
+  * Editor names, 360info (hint: put &shy; in the middle of long names!)
+  * Data: ORG
+  (if there isn't room, put it in the ABOUT dialog) -->
+<p>James Goldie, 360info</p>
+<p>Data: NOAA PSL</p>
+</div>
+<!-- finally, here's the EDITOR SHARE button. it's a quick way to copy the
+     embed code for editors and will only appear if ?edshare=true is in the
+     url (that way it'll appear on the newswire but not subsequent shares) -->
+<div id="edshare">
+  <i id="edshare-icon" class="bi bi-clipboard2-plus-fill"></i>
+  <div>
+    <h4 id="edshare-title" class="anchored">GET THIS MAP</h4>
+    <p id="edshare-description">Click to copy this into your story</p>
+  </div>
+</div>
+<!-- editor share banner: enable if ?edshare is in the url -->
+<script>
+  window.addEventListener("load", () => {
+    pageURL = new URL(window.location.href);
+    edshare = pageURL.searchParams.get("edshare");
+    
+    edshareBtn = document.querySelector("#edshare");
+    if (edshare === null) {
+      edshareBtn.style.display = "none";
+    } else {
+    
+      edshareBtn.classList.add("ready");
+    
+      edshareBtn.addEventListener("click", () => {
+
+        // copy the embed code to the clipboard
+        navigator.clipboard.writeText(
+          `<div style="position:relative; padding-bottom: 70%"> <iframe allow="fullscreen; clipboard-write self https://aug2023.360info-tracker-ocean-temperatures.pages.dev" allowfullscreen="true" src="https://aug2023.360info-tracker-ocean-temperatures.pages.dev/vis-monthly/" title="Interactive: ocean temperatures" style="width:100%; height:100%; position: absolute; top: 0; left: 0; border:none; background-color: white;" scrolling="no"></iframe>> </div>`);
+
+        // update button styles and content
+        edshareBtn.classList.remove("ready");
+        edshareBtn.classList.add("clicked");
+
+        edshareIcon = document.querySelector("#edshare-icon");
+        edshareIcon.removeAttribute("class");
+        edshareIcon.classList.add("bi");
+        edshareIcon.classList.add("bi-check");
+
+        edshareTitle = document.querySelector("#edshare-title");
+        edshareTitle.innerText = "COPIED!";
+
+        edshareDescription = document.querySelector("#edshare-description");
+        edshareDescription.innerHTML =
+          `Paste this interactive with the <i class="bi bi-code-square"></i> Embed button in your story editor.</br></br>
+          
+          Please remember to <strong>attribute 360info and our data sources.</strong>`
+
+        // button exit animation
+        setTimeout(() => {  edshareBtn.classList.add("done"); }, 5000);
+        setTimeout(() => {  edshareBtn.style.display = "none"; }, 7000);
+      });
+    }
+  });
+</script>
+<div id="import" class="cell">
+<div class="sourceCode cell-code hidden" id="cb1" data-startfrom="19" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 18;"><span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { aq<span class="op">,</span> op } <span class="im">from</span> <span class="st">"@uwdata/arquero"</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>Plot <span class="op">=</span> <span class="im">import</span>(<span class="st">"https://esm.run/@observablehq/plot"</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>dataPath <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/"</span> <span class="op">+</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="st">"360-info/tracker-ocean-temperatures/main/data/"</span> <span class="op">+</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">"monthly-all.csv"</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">// get the latest monthly data</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>allData <span class="op">=</span> aq<span class="op">.</span><span class="fu">loadCSV</span>(dataPath<span class="op">,</span> {</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="dt">parse</span><span class="op">:</span> {</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="dt">temperature</span><span class="op">:</span> <span class="bu">Number</span><span class="op">,</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="dt">date</span><span class="op">:</span> op<span class="op">.</span><span class="at">parse_date</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="import-1">
+<div id="ojs-cell-1-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="import-2">
+<div id="ojs-cell-1-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="import-3">
+<div id="ojs-cell-1-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="import-4">
+<div id="ojs-cell-1-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div id="region-list" class="cell">
+<div class="sourceCode cell-code hidden" id="cb2" data-startfrom="39" data-source-offset="-69"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 38;"><span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">regionFormatter</span>(str) {  </span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> str</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">replaceAll</span>(<span class="st">"_"</span><span class="op">,</span> <span class="st">" "</span>)</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">replace</span>(<span class="ss">/</span><span class="sc">\w\S*</span><span class="ss">/g</span><span class="op">,</span>  </span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>        <span class="kw">function</span> (txt) {  </span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> txt<span class="op">.</span><span class="fu">charAt</span>(<span class="dv">0</span>)<span class="op">.</span><span class="fu">toUpperCase</span>() <span class="op">+</span> txt<span class="op">.</span><span class="fu">substr</span>(<span class="dv">1</span>)<span class="op">.</span><span class="fu">toLowerCase</span>()<span class="op">;</span>  </span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">replaceAll</span>(<span class="st">"60s To 60n"</span><span class="op">,</span> <span class="st">"(excl. polar regions)"</span>)</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">replaceAll</span>(<span class="st">"Of"</span><span class="op">,</span> <span class="st">"of"</span>)</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">replaceAll</span>(<span class="st">"And "</span><span class="op">,</span> <span class="st">"and "</span>)</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="co">// get a map of unique region names in the data for the dropdown menu</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="co">// (remove a few that we don't want to show in this version)</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>allRegions <span class="op">=</span> allData</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">select</span>(<span class="st">"region"</span>)</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">dedupe</span>()</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">array</span>(<span class="st">"region"</span>)</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>allRegionsMap <span class="op">=</span> <span class="kw">new</span> <span class="bu">Map</span>(allRegions<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> [<span class="fu">regionFormatter</span>(d)<span class="op">,</span> d]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="region-list-1">
+<div id="ojs-cell-2-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="region-list-2">
+<div id="ojs-cell-2-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="region-list-3">
+<div id="ojs-cell-2-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div id="controls" class="cell">
+<div class="sourceCode cell-code hidden" id="cb3" data-startfrom="64" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 63;"><span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>viewof selectedRegion <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(allRegionsMap)</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>calendarMonths <span class="op">=</span> [</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>  <span class="st">"January"</span><span class="op">,</span> <span class="st">"February"</span><span class="op">,</span> <span class="st">"March"</span><span class="op">,</span> <span class="st">"April"</span><span class="op">,</span> <span class="st">"May"</span><span class="op">,</span> <span class="st">"June"</span><span class="op">,</span> <span class="st">"July"</span><span class="op">,</span> <span class="st">"August"</span><span class="op">,</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>  <span class="st">"September"</span><span class="op">,</span> <span class="st">"October"</span><span class="op">,</span> <span class="st">"November"</span><span class="op">,</span> <span class="st">"December"</span>]</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>possibleMonths <span class="op">=</span> <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>  [<span class="st">"Yearly average"</span><span class="op">,</span> <span class="dv">0</span>]<span class="op">,</span> <span class="op">...</span>calendarMonths<span class="op">.</span><span class="fu">map</span>((d<span class="op">,</span> i) <span class="kw">=&gt;</span> [d<span class="op">,</span> i <span class="op">+</span> <span class="dv">1</span>])])</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>previousMonth <span class="op">=</span> (<span class="kw">new</span> <span class="bu">Date</span>())<span class="op">.</span><span class="fu">getMonth</span>()</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>defaultMonth <span class="op">=</span> (previousMonth) <span class="op">==</span> <span class="dv">0</span> <span class="op">?</span> <span class="dv">12</span> <span class="op">:</span> previousMonth</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>viewof selectedPeriod <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(possibleMonths<span class="op">,</span> {</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>  <span class="dt">value</span><span class="op">:</span> defaultMonth</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="co">// this feels overwrought</span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>selectedPeriodLabel <span class="op">=</span> selectedPeriod <span class="op">&gt;=</span> <span class="dv">1</span> <span class="op">?</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>  calendarMonths[selectedPeriod <span class="op">-</span> <span class="dv">1</span>] <span class="op">:</span></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Yearly average"</span></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>viewof showAnomalies <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span>(</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([[<span class="st">"Compare to the 1986–2015 baseline"</span><span class="op">,</span> <span class="st">"anomalies"</span>]])<span class="op">,</span> {</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>    <span class="dt">value</span><span class="op">:</span> [<span class="st">"anomalies"</span>]</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>  })</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="controls-1">
+<div id="ojs-cell-3-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="controls-2">
+<div id="ojs-cell-3-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="controls-3">
+<div id="ojs-cell-3-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="controls-4">
+<div id="ojs-cell-3-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="controls-5">
+<div id="ojs-cell-3-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="controls-6">
+<div id="ojs-cell-3-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="controls-7">
+<div id="ojs-cell-3-7" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="controls-8">
+<div id="ojs-cell-3-8" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div id="filter-data" class="cell">
+<div class="sourceCode cell-code hidden" id="cb4" data-startfrom="93" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 92;"><span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a>baselineStart <span class="op">=</span> <span class="dv">1986</span></span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a>baselineEnd <span class="op">=</span> <span class="dv">2015</span></span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a><span class="co">// extract month and year, then filter on user selections</span></span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a>regionData <span class="op">=</span> allData</span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">params</span>({</span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>    <span class="dt">selectedPeriod</span><span class="op">:</span> selectedPeriod<span class="op">,</span></span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>    <span class="dt">selectedRegion</span><span class="op">:</span> selectedRegion<span class="op">,</span></span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a>    <span class="dt">baselineStart</span><span class="op">:</span> baselineStart<span class="op">,</span></span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a>    <span class="dt">baselineEnd</span><span class="op">:</span> baselineEnd</span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">region</span> <span class="op">==</span> selectedRegion)</span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">derive</span>({</span>
+<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a>    <span class="dt">month</span><span class="op">:</span> d <span class="kw">=&gt;</span> op<span class="op">.</span><span class="fu">month</span>(d<span class="op">.</span><span class="at">date</span>) <span class="op">+</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>    <span class="dt">year</span><span class="op">:</span> d <span class="kw">=&gt;</span> op<span class="op">.</span><span class="fu">year</span>(d<span class="op">.</span><span class="at">date</span>)</span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">groupby</span>(<span class="st">"month"</span>)</span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">derive</span>({</span>
+<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a>    <span class="dt">baselineYearTemp</span><span class="op">:</span> d <span class="kw">=&gt;</span></span>
+<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a>      (d<span class="op">.</span><span class="at">year</span> <span class="op">&gt;=</span> baselineStart <span class="op">&amp;&amp;</span> d<span class="op">.</span><span class="at">year</span> <span class="op">&lt;=</span> baselineEnd) <span class="op">?</span></span>
+<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a>        d<span class="op">.</span><span class="at">temperature</span> <span class="op">:</span> <span class="kw">null</span></span>
+<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">derive</span>({</span>
+<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a>    <span class="dt">anomaly</span><span class="op">:</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">temperature</span> <span class="op">-</span> op<span class="op">.</span><span class="fu">mean</span>(d<span class="op">.</span><span class="at">baselineYearTemp</span>)</span>
+<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">derive</span>({</span>
+<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a>    <span class="dt">anomalySign</span><span class="op">:</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">anomaly</span> <span class="op">&gt;=</span> <span class="dv">0</span></span>
+<span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb4-121"><a href="#cb4-121" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">ungroup</span>()</span>
+<span id="cb4-122"><a href="#cb4-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a>filteredData <span class="op">=</span> regionData<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> selectedPeriod <span class="op">==</span> d<span class="op">.</span><span class="at">month</span>)</span>
+<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-125"><a href="#cb4-125" aria-hidden="true" tabindex="-1"></a><span class="co">// separately calculate annual data if that's selected</span></span>
+<span id="cb4-126"><a href="#cb4-126" aria-hidden="true" tabindex="-1"></a><span class="co">// (drop incomplete years, and calculate a baseline if the data allows)</span></span>
+<span id="cb4-127"><a href="#cb4-127" aria-hidden="true" tabindex="-1"></a>annualTemps <span class="op">=</span> regionData</span>
+<span id="cb4-128"><a href="#cb4-128" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">params</span>({</span>
+<span id="cb4-129"><a href="#cb4-129" aria-hidden="true" tabindex="-1"></a>    <span class="dt">baselineStart</span><span class="op">:</span> baselineStart<span class="op">,</span></span>
+<span id="cb4-130"><a href="#cb4-130" aria-hidden="true" tabindex="-1"></a>    <span class="dt">baselineEnd</span><span class="op">:</span> baselineEnd</span>
+<span id="cb4-131"><a href="#cb4-131" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">groupby</span>(<span class="st">"year"</span>)</span>
+<span id="cb4-133"><a href="#cb4-133" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">derive</span>({</span>
+<span id="cb4-134"><a href="#cb4-134" aria-hidden="true" tabindex="-1"></a>    <span class="dt">ob_number</span><span class="op">:</span> op<span class="op">.</span><span class="fu">row_number</span>()</span>
+<span id="cb4-135"><a href="#cb4-135" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb4-136"><a href="#cb4-136" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">rollup</span>({</span>
+<span id="cb4-137"><a href="#cb4-137" aria-hidden="true" tabindex="-1"></a>    <span class="dt">temperature</span><span class="op">:</span> op<span class="op">.</span><span class="fu">mean</span>(<span class="st">"temperature"</span>)<span class="op">,</span></span>
+<span id="cb4-138"><a href="#cb4-138" aria-hidden="true" tabindex="-1"></a>    <span class="dt">n_obs</span><span class="op">:</span> d <span class="kw">=&gt;</span> op<span class="op">.</span><span class="fu">max</span>(d<span class="op">.</span><span class="at">ob_number</span>)<span class="op">,</span></span>
+<span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">ungroup</span>()</span>
+<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">n_obs</span> <span class="op">==</span> <span class="dv">12</span>)</span>
+<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">derive</span>({</span>
+<span id="cb4-143"><a href="#cb4-143" aria-hidden="true" tabindex="-1"></a>    <span class="dt">date</span><span class="op">:</span> d <span class="kw">=&gt;</span> op<span class="op">.</span><span class="fu">parse_date</span>(d<span class="op">.</span><span class="at">year</span> <span class="op">+</span> <span class="st">"-07-01T00:00:00Z"</span>)<span class="op">,</span></span>
+<span id="cb4-144"><a href="#cb4-144" aria-hidden="true" tabindex="-1"></a>    <span class="dt">baselineYearTemp</span><span class="op">:</span> d <span class="kw">=&gt;</span></span>
+<span id="cb4-145"><a href="#cb4-145" aria-hidden="true" tabindex="-1"></a>      (d<span class="op">.</span><span class="at">year</span> <span class="op">&gt;=</span> baselineStart <span class="op">&amp;&amp;</span> d<span class="op">.</span><span class="at">year</span> <span class="op">&lt;=</span> baselineEnd) <span class="op">?</span></span>
+<span id="cb4-146"><a href="#cb4-146" aria-hidden="true" tabindex="-1"></a>        d<span class="op">.</span><span class="at">temperature</span> <span class="op">:</span> <span class="kw">null</span></span>
+<span id="cb4-147"><a href="#cb4-147" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb4-148"><a href="#cb4-148" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">derive</span>({</span>
+<span id="cb4-149"><a href="#cb4-149" aria-hidden="true" tabindex="-1"></a>    <span class="dt">anomaly</span><span class="op">:</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">temperature</span> <span class="op">-</span> op<span class="op">.</span><span class="fu">mean</span>(d<span class="op">.</span><span class="at">baselineYearTemp</span>)</span>
+<span id="cb4-150"><a href="#cb4-150" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb4-151"><a href="#cb4-151" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">derive</span>({</span>
+<span id="cb4-152"><a href="#cb4-152" aria-hidden="true" tabindex="-1"></a>    <span class="dt">anomalySign</span><span class="op">:</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">anomaly</span> <span class="op">&gt;=</span> <span class="dv">0</span></span>
+<span id="cb4-153"><a href="#cb4-153" aria-hidden="true" tabindex="-1"></a>  })</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="filter-data-1">
+<div id="ojs-cell-4-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="filter-data-2">
+<div id="ojs-cell-4-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="filter-data-3">
+<div id="ojs-cell-4-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="filter-data-4">
+<div id="ojs-cell-4-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="filter-data-5">
+<div id="ojs-cell-4-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div id="vis-data" class="cell">
+<div class="sourceCode cell-code hidden" id="cb5" data-startfrom="161" data-source-offset="-65"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 160;"><span id="cb5-161"><a href="#cb5-161" aria-hidden="true" tabindex="-1"></a>selectedSeries <span class="op">=</span> selectedPeriod <span class="op">==</span> <span class="dv">0</span> <span class="op">?</span> annualTemps <span class="op">:</span> filteredData</span>
+<span id="cb5-162"><a href="#cb5-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-163"><a href="#cb5-163" aria-hidden="true" tabindex="-1"></a><span class="co">// some options for conditionally showing parts of the chart:</span></span>
+<span id="cb5-164"><a href="#cb5-164" aria-hidden="true" tabindex="-1"></a><span class="co">// - whether to show original temps or anomalies</span></span>
+<span id="cb5-165"><a href="#cb5-165" aria-hidden="true" tabindex="-1"></a><span class="co">// - the window size to use for smoothing</span></span>
+<span id="cb5-166"><a href="#cb5-166" aria-hidden="true" tabindex="-1"></a><span class="co">// showTemps = showAnomalies.includes("anomalies")</span></span>
+<span id="cb5-167"><a href="#cb5-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-168"><a href="#cb5-168" aria-hidden="true" tabindex="-1"></a><span class="co">// window size in _years_</span></span>
+<span id="cb5-169"><a href="#cb5-169" aria-hidden="true" tabindex="-1"></a>windowSize <span class="op">=</span> <span class="dv">15</span></span>
+<span id="cb5-170"><a href="#cb5-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-171"><a href="#cb5-171" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb5-172"><a href="#cb5-172" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb5-173"><a href="#cb5-173" aria-hidden="true" tabindex="-1"></a>    <span class="co">// if original temps: show line and smoother</span></span>
+<span id="cb5-174"><a href="#cb5-174" aria-hidden="true" tabindex="-1"></a>    showAnomalies<span class="op">.</span><span class="fu">includes</span>(<span class="st">"anomalies"</span>) <span class="op">?</span> <span class="kw">null</span> <span class="op">:</span></span>
+<span id="cb5-175"><a href="#cb5-175" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">lineY</span>(selectedSeries<span class="op">,</span> {</span>
+<span id="cb5-176"><a href="#cb5-176" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x</span><span class="op">:</span> <span class="st">"date"</span><span class="op">,</span></span>
+<span id="cb5-177"><a href="#cb5-177" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y</span><span class="op">:</span> showAnomalies<span class="op">.</span><span class="fu">includes</span>(<span class="st">"anomalies"</span>) <span class="op">?</span> <span class="st">"anomaly"</span> <span class="op">:</span> <span class="st">"temperature"</span><span class="op">,</span></span>
+<span id="cb5-178"><a href="#cb5-178" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">"lightgrey"</span><span class="op">,</span></span>
+<span id="cb5-179"><a href="#cb5-179" aria-hidden="true" tabindex="-1"></a>        <span class="dt">strokeWidth</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb5-180"><a href="#cb5-180" aria-hidden="true" tabindex="-1"></a>        <span class="dt">tip</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb5-181"><a href="#cb5-181" aria-hidden="true" tabindex="-1"></a>        <span class="dt">title</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span>selectedPeriodLabel<span class="sc">}</span><span class="vs"> </span><span class="sc">${</span>d<span class="op">.</span><span class="at">year</span><span class="sc">}\n${</span>d3<span class="op">.</span><span class="fu">format</span>(<span class="st">"-.2f"</span>)(d<span class="op">.</span><span class="at">temperature</span>)<span class="sc">}</span><span class="vs"> °C</span><span class="sc">\n\n${</span>d3<span class="op">.</span><span class="fu">format</span>(<span class="st">"+.2f"</span>)(d<span class="op">.</span><span class="at">anomaly</span>)<span class="sc">}</span><span class="vs"> °C compared to</span><span class="sc">\n</span><span class="vs">1986-2015 baseline`</span><span class="op">,</span></span>
+<span id="cb5-182"><a href="#cb5-182" aria-hidden="true" tabindex="-1"></a>        <span class="dt">ariaDescription</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`For </span><span class="sc">${</span>selectedPeriodLabel<span class="sc">}</span><span class="vs"> </span><span class="sc">${</span>d<span class="op">.</span><span class="at">year</span><span class="sc">}</span><span class="vs">, the temperature was </span><span class="sc">${</span>d3<span class="op">.</span><span class="fu">format</span>(<span class="st">"-.2f"</span>)(d<span class="op">.</span><span class="at">temperature</span>)<span class="sc">}</span><span class="vs"> °C, or </span><span class="sc">${</span>d3<span class="op">.</span><span class="fu">format</span>(<span class="st">"+.2f"</span>)(d<span class="op">.</span><span class="at">anomaly</span>)<span class="sc">}</span><span class="vs"> °C compared to the 1986-2015 baseline.`</span></span>
+<span id="cb5-183"><a href="#cb5-183" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
+<span id="cb5-184"><a href="#cb5-184" aria-hidden="true" tabindex="-1"></a>    showAnomalies<span class="op">.</span><span class="fu">includes</span>(<span class="st">"anomalies"</span>) <span class="op">?</span> <span class="kw">null</span> <span class="op">:</span></span>
+<span id="cb5-185"><a href="#cb5-185" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">lineY</span>(selectedSeries<span class="op">,</span> Plot<span class="op">.</span><span class="fu">windowY</span>(windowSize<span class="op">,</span> {</span>
+<span id="cb5-186"><a href="#cb5-186" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x</span><span class="op">:</span> <span class="st">"date"</span><span class="op">,</span></span>
+<span id="cb5-187"><a href="#cb5-187" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y</span><span class="op">:</span> showAnomalies<span class="op">.</span><span class="fu">includes</span>(<span class="st">"anomalies"</span>) <span class="op">?</span> <span class="st">"anomaly"</span> <span class="op">:</span> <span class="st">"temperature"</span><span class="op">,</span></span>
+<span id="cb5-188"><a href="#cb5-188" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span></span>
+<span id="cb5-189"><a href="#cb5-189" aria-hidden="true" tabindex="-1"></a>        <span class="dt">tip</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb5-190"><a href="#cb5-190" aria-hidden="true" tabindex="-1"></a>        <span class="dt">title</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span>selectedPeriodLabel<span class="sc">}</span><span class="vs"> </span><span class="sc">${</span>d<span class="op">.</span><span class="at">year</span><span class="sc">}\n${</span>d3<span class="op">.</span><span class="fu">format</span>(<span class="st">"-.2f"</span>)(d<span class="op">.</span><span class="at">temperature</span>)<span class="sc">}</span><span class="vs"> °C</span><span class="sc">\n\n${</span>d3<span class="op">.</span><span class="fu">format</span>(<span class="st">"+.2f"</span>)(d<span class="op">.</span><span class="at">anomaly</span>)<span class="sc">}</span><span class="vs"> °C compared to</span><span class="sc">\n</span><span class="vs">1986-2015 baseline`</span><span class="op">,</span></span>
+<span id="cb5-191"><a href="#cb5-191" aria-hidden="true" tabindex="-1"></a>        <span class="dt">ariaDescription</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`For </span><span class="sc">${</span>selectedPeriodLabel<span class="sc">}</span><span class="vs"> </span><span class="sc">${</span>d<span class="op">.</span><span class="at">year</span><span class="sc">}</span><span class="vs">, the temperature was </span><span class="sc">${</span>d3<span class="op">.</span><span class="fu">format</span>(<span class="st">"-.2f"</span>)(d<span class="op">.</span><span class="at">temperature</span>)<span class="sc">}</span><span class="vs"> °C, or </span><span class="sc">${</span>d3<span class="op">.</span><span class="fu">format</span>(<span class="st">"+.2f"</span>)(d<span class="op">.</span><span class="at">anomaly</span>)<span class="sc">}</span><span class="vs"> °C compared to the 1986-2015 baseline.`</span></span>
+<span id="cb5-192"><a href="#cb5-192" aria-hidden="true" tabindex="-1"></a>      }))<span class="op">,</span></span>
+<span id="cb5-193"><a href="#cb5-193" aria-hidden="true" tabindex="-1"></a>    <span class="co">// if anomalies: show bars, shaded by sign</span></span>
+<span id="cb5-194"><a href="#cb5-194" aria-hidden="true" tabindex="-1"></a>    showAnomalies<span class="op">.</span><span class="fu">includes</span>(<span class="st">"anomalies"</span>) <span class="op">?</span> Plot<span class="op">.</span><span class="fu">ruleY</span>([<span class="dv">0</span>]) <span class="op">:</span> <span class="kw">null</span><span class="op">,</span></span>
+<span id="cb5-195"><a href="#cb5-195" aria-hidden="true" tabindex="-1"></a>    showAnomalies<span class="op">.</span><span class="fu">includes</span>(<span class="st">"anomalies"</span>) <span class="op">?</span></span>
+<span id="cb5-196"><a href="#cb5-196" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">rectY</span>(selectedSeries<span class="op">,</span> {</span>
+<span id="cb5-197"><a href="#cb5-197" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x</span><span class="op">:</span> <span class="st">"date"</span><span class="op">,</span></span>
+<span id="cb5-198"><a href="#cb5-198" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y</span><span class="op">:</span> <span class="st">"anomaly"</span><span class="op">,</span></span>
+<span id="cb5-199"><a href="#cb5-199" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> <span class="st">"anomalySign"</span><span class="op">,</span></span>
+<span id="cb5-200"><a href="#cb5-200" aria-hidden="true" tabindex="-1"></a>        <span class="dt">interval</span><span class="op">:</span> d3<span class="op">.</span><span class="at">utcYear</span><span class="op">,</span></span>
+<span id="cb5-201"><a href="#cb5-201" aria-hidden="true" tabindex="-1"></a>        <span class="dt">tip</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb5-202"><a href="#cb5-202" aria-hidden="true" tabindex="-1"></a>        <span class="dt">title</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span>selectedPeriodLabel<span class="sc">}</span><span class="vs"> </span><span class="sc">${</span>d<span class="op">.</span><span class="at">year</span><span class="sc">}\n${</span>d3<span class="op">.</span><span class="fu">format</span>(<span class="st">"-.2f"</span>)(d<span class="op">.</span><span class="at">temperature</span>)<span class="sc">}</span><span class="vs"> °C</span><span class="sc">\n\n${</span>d3<span class="op">.</span><span class="fu">format</span>(<span class="st">"+.2f"</span>)(d<span class="op">.</span><span class="at">anomaly</span>)<span class="sc">}</span><span class="vs"> °C compared to</span><span class="sc">\n</span><span class="vs">1986-2015 baseline`</span><span class="op">,</span></span>
+<span id="cb5-203"><a href="#cb5-203" aria-hidden="true" tabindex="-1"></a>        <span class="dt">ariaDescription</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`For </span><span class="sc">${</span>selectedPeriodLabel<span class="sc">}</span><span class="vs"> </span><span class="sc">${</span>d<span class="op">.</span><span class="at">year</span><span class="sc">}</span><span class="vs">, the temperature was </span><span class="sc">${</span>d3<span class="op">.</span><span class="fu">format</span>(<span class="st">"-.2f"</span>)(d<span class="op">.</span><span class="at">temperature</span>)<span class="sc">}</span><span class="vs"> °C, or </span><span class="sc">${</span>d3<span class="op">.</span><span class="fu">format</span>(<span class="st">"+.2f"</span>)(d<span class="op">.</span><span class="at">anomaly</span>)<span class="sc">}</span><span class="vs"> °C compared to the 1986-2015 baseline.`</span></span>
+<span id="cb5-204"><a href="#cb5-204" aria-hidden="true" tabindex="-1"></a>      }) <span class="op">:</span> <span class="kw">null</span></span>
+<span id="cb5-205"><a href="#cb5-205" aria-hidden="true" tabindex="-1"></a>  ]<span class="op">,</span></span>
+<span id="cb5-206"><a href="#cb5-206" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {</span>
+<span id="cb5-207"><a href="#cb5-207" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> showAnomalies<span class="op">.</span><span class="fu">includes</span>(<span class="st">"anomalies"</span>) <span class="op">?</span></span>
+<span id="cb5-208"><a href="#cb5-208" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Temperature (compared to "</span> <span class="op">+</span> baselineStart <span class="op">+</span> <span class="st">"–"</span> <span class="op">+</span> baselineEnd <span class="op">+</span></span>
+<span id="cb5-209"><a href="#cb5-209" aria-hidden="true" tabindex="-1"></a>        <span class="st">" baseline)"</span> <span class="op">:</span></span>
+<span id="cb5-210"><a href="#cb5-210" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Temperature"</span><span class="op">,</span></span>
+<span id="cb5-211"><a href="#cb5-211" aria-hidden="true" tabindex="-1"></a>    <span class="dt">labelArrow</span><span class="op">:</span> <span class="st">"none"</span><span class="op">,</span></span>
+<span id="cb5-212"><a href="#cb5-212" aria-hidden="true" tabindex="-1"></a>    <span class="dt">tickFormat</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> showAnomalies<span class="op">.</span><span class="fu">includes</span>(<span class="st">"anomalies"</span>) <span class="op">?</span></span>
+<span id="cb5-213"><a href="#cb5-213" aria-hidden="true" tabindex="-1"></a>      <span class="vs">`</span><span class="sc">${</span>d3<span class="op">.</span><span class="fu">format</span>(<span class="st">"+.1f"</span>)(d)<span class="sc">}</span><span class="vs"> °C`</span> <span class="op">:</span></span>
+<span id="cb5-214"><a href="#cb5-214" aria-hidden="true" tabindex="-1"></a>      <span class="vs">`</span><span class="sc">${</span>d3<span class="op">.</span><span class="fu">format</span>(<span class="st">"-.1f"</span>)(d)<span class="sc">}</span><span class="vs"> °C`</span></span>
+<span id="cb5-215"><a href="#cb5-215" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb5-216"><a href="#cb5-216" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {</span>
+<span id="cb5-217"><a href="#cb5-217" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">"Year"</span><span class="op">,</span></span>
+<span id="cb5-218"><a href="#cb5-218" aria-hidden="true" tabindex="-1"></a>    <span class="dt">labelArrow</span><span class="op">:</span> <span class="st">"none"</span></span>
+<span id="cb5-219"><a href="#cb5-219" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb5-220"><a href="#cb5-220" aria-hidden="true" tabindex="-1"></a>  <span class="dt">color</span><span class="op">:</span> {</span>
+<span id="cb5-221"><a href="#cb5-221" aria-hidden="true" tabindex="-1"></a>    <span class="dt">domain</span><span class="op">:</span> [<span class="kw">true</span><span class="op">,</span> <span class="kw">false</span>]<span class="op">,</span></span>
+<span id="cb5-222"><a href="#cb5-222" aria-hidden="true" tabindex="-1"></a>    <span class="dt">range</span><span class="op">:</span> [<span class="st">"#d73027"</span><span class="op">,</span> <span class="st">"#4575b4"</span>]</span>
+<span id="cb5-223"><a href="#cb5-223" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb5-224"><a href="#cb5-224" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">62</span><span class="op">,</span></span>
+<span id="cb5-225"><a href="#cb5-225" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">40</span><span class="op">,</span></span>
+<span id="cb5-226"><a href="#cb5-226" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {</span>
+<span id="cb5-227"><a href="#cb5-227" aria-hidden="true" tabindex="-1"></a>    <span class="dt">fontSize</span><span class="op">:</span> <span class="dv">14</span></span>
+<span id="cb5-228"><a href="#cb5-228" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-229"><a href="#cb5-229" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="vis-data-1">
+<div id="ojs-cell-5-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="vis-data-2">
+<div id="ojs-cell-5-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="vis-data-3">
+<div id="ojs-cell-5-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+<!-- initialise miromodal.js -->
+<div class="cell" data-include="false">
+<div class="sourceCode cell-code hidden" id="cb6" data-startfrom="1" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>micro <span class="op">=</span> <span class="pp">require</span>(<span class="st">"micromodal@0.4.10"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>micro<span class="op">.</span><span class="fu">init</span>({</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">awaitOpenAnimation</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">awaitCloseAnimation</span><span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-6-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-6-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+<div id="modal-useremix" class="modal micromodal-slide" aria-hidden="true">
+<div class="modal__overlay" tabindex="-1" data-micromodal-close="true">
+<div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-useremix-title">
+<button class="modal__close" aria-label="Close modal" data-micromodal-close="">
+</button>
+<div id="modal-useremix-content">
+<h2 id="use-remix" class="anchored">Use + Remix</h2>
+<p>These charts, as well as the analyses that underpin them, are available under a <a href="https://creativecommons.org/licenses/by/4.0"><strong>Creative Commons Attribution 4.0 licence</strong></a>.</p>
+<p>The data comes from <a href="https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.highres.html">NOAA PSL</a> and <a href="https://doi.org/10.5194/essd-6-273-2014">Fay &amp; McKinley (2014)</a>. Please acknowledge <a href="https://360info.org">360info</a> and our data sources when you use these charts and data.</p>
+<h4 id="embed-this-chart-in-your-article" class="anchored">Embed this chart in your article</h4>
+<p>Copy and paste the following code:</p>
+<div class="embedcode">
+<pre><code>&lt;div style="position:relative; padding-bottom: 70%"&gt; &lt;iframe allow="fullscreen; clipboard-write self https://aug2023.360info-tracker-ocean-temperatures.pages.dev" allowfullscreen="true" src="https://aug2023.360info-tracker-ocean-temperatures.pages.dev/vis-monthly/" title="Interactive: ocean temperatures" style="width:100%; height:100%; position: absolute; top: 0; left: 0; border:none; background-color: white;" scrolling="no"&gt;&lt;/iframe&gt;&gt; &lt;/div&gt;</code></pre>
+</div>
+<p>This content is subject to <a href="https://newshub.360info.org/page/terms">360info’s Terms of Use</a>.</p>
+<h4 id="get-the-data-and-code" class="anchored">Get the data and code</h4>
+<p>Visit the <a href="https://github.com/360-info/tracker-ocean-temperatures/tree/main/data">GitHub repository</a> to:</p>
+<ul>
+<li><a href="https://github.com/360-info/tracker-ocean-temperatures/tree/main/data"><strong>Download the live data</strong></a></li>
+<li><a href="https://github.com/360-info/tracker-ocean-temperatures"><strong>Recreate or remix the chart</strong></a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<!-- notes dialog -->
+<div id="modal-about" class="modal micromodal-slide" aria-hidden="true">
+<div class="modal__overlay" tabindex="-1" data-micromodal-close="true">
+<div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-about-title">
+<button class="modal__close" aria-label="Close modal" data-micromodal-close="">
+</button>
+<header>
+<h2 id="modal-about-title" class="anchored">About this ocean temperature tracker</h2>
+</header>
+<div id="modal-about-content">
+<p>This chart tracks the average temperatures at the sea surface. The dataset we use is <a href="https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.highres.html">OISST v2</a>, created by <a href="https://noaa.gov/">National Oceanic and Atmospheric Administration’s</a> <a href="https://psl.noaa.gov/">Physical Sciences Laboratory</a>.</p>
+<p>OISST updates both daily and monthly (we show the monthly updates here). The dataset <a href="https://www.ncei.noaa.gov/products/optimum-interpolation-sst">blends sea surface temperature observations</a> from satellites, ships, buoys and Argo floats (small submersibles that patrol the oceans, dipping below the surface periodically to measure the deep ocean). These observations are compared using their strengths and weaknesses to fill out the Earth’s surface.</p>
+<p>In this chart, you can choose which month of the year to focus on (or to look at the yearly average), as well as which ocean or sea to focus on. In this version, we have observations for the major oceans, as well as the Mediterranean Sea, the Bay of Bengal and Andaman Sea and the global average (both excluding polar regions and running up to 85°). We also have several climate monitoring regions used to measure phenomena like the El Niño Southern Oscillation (ENSO) and the Indian Ocean Dipole.</p>
+<p>In order to choose the ocean regions, we rely on the <a href="https://github.com/RECCAP2-ocean">RECCAP2-ocean project</a>, which uses ocean “masks” published by <a href="https://doi.org/10.5194/essd-6-273-2014">Fay &amp; McKinley (2014)</a> under Creative Commons Attribution 3.0 (<a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>). These regions are slightly different to those used by NOAA, so you may see small differences reported when comparing against other datasets.</p>
+<p>We also use a slightly more recent “baseline” (1986-2015) than some other dataets, as this dataset begins in the early 1980s. The baseline chosen affects the actual numbers reported but not the trends you see. You can see the actual temperatures by hovering over the bars or by tapping the checkbox to toggle them on.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+<script type="ojs-module-contents">
+{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"import { aq, op } from \"@uwdata/arquero\"\nPlot = import(\"https://esm.run/@observablehq/plot\")\n\ndataPath = \"https://raw.githubusercontent.com/\" +\n  \"360-info/tracker-ocean-temperatures/main/data/\" +\n  \"monthly-all.csv\"\n\n// get the latest monthly data\nallData = aq.loadCSV(dataPath, {\n  parse: {\n    temperature: Number,\n    date: op.parse_date\n  }\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"\n// format regions in title case with underscores replaced by spaces\nfunction regionFormatter(str) {  \n    return str\n      .replaceAll(\"_\", \" \")\n      .replace(/\\w\\S*/g,  \n        function (txt) {  \n            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();  \n        })\n      .replaceAll(\"60s To 60n\", \"(excl. polar regions)\")\n      .replaceAll(\"Of\", \"of\")\n      .replaceAll(\"And \", \"and \")\n}\n\n// get a map of unique region names in the data for the dropdown menu\n// (remove a few that we don't want to show in this version)\nallRegions = allData\n  .select(\"region\")\n  .dedupe()\n  .array(\"region\")\n\nallRegionsMap = new Map(allRegions.map(d => [regionFormatter(d), d]))\n"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"\nviewof selectedRegion = Inputs.select(allRegionsMap)\n\ncalendarMonths = [\n  \"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\",\n  \"September\", \"October\", \"November\", \"December\"]\npossibleMonths = new Map([\n  [\"Yearly average\", 0], ...calendarMonths.map((d, i) => [d, i + 1])])\n\npreviousMonth = (new Date()).getMonth()\ndefaultMonth = (previousMonth) == 0 ? 12 : previousMonth\nviewof selectedPeriod = Inputs.select(possibleMonths, {\n  value: defaultMonth\n})\n\n// this feels overwrought\nselectedPeriodLabel = selectedPeriod >= 1 ?\n  calendarMonths[selectedPeriod - 1] :\n  \"Yearly average\"\n\nviewof showAnomalies = Inputs.checkbox(\n  new Map([[\"Compare to the 1986–2015 baseline\", \"anomalies\"]]), {\n    value: [\"anomalies\"]\n  })\n\n"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"\nbaselineStart = 1986\nbaselineEnd = 2015\n\n// extract month and year, then filter on user selections\nregionData = allData\n  .params({\n    selectedPeriod: selectedPeriod,\n    selectedRegion: selectedRegion,\n    baselineStart: baselineStart,\n    baselineEnd: baselineEnd\n  })\n  .filter(d => d.region == selectedRegion)\n  .derive({\n    month: d => op.month(d.date) + 1,\n    year: d => op.year(d.date)\n  })\n  .groupby(\"month\")\n  .derive({\n    baselineYearTemp: d =>\n      (d.year >= baselineStart && d.year <= baselineEnd) ?\n        d.temperature : null\n  })\n  .derive({\n    anomaly: d => d.temperature - op.mean(d.baselineYearTemp)\n  })\n  .derive({\n    anomalySign: d => d.anomaly >= 0\n  })\n  .ungroup()\n\nfilteredData = regionData.filter(d => selectedPeriod == d.month)\n\n// separately calculate annual data if that's selected\n// (drop incomplete years, and calculate a baseline if the data allows)\nannualTemps = regionData\n  .params({\n    baselineStart: baselineStart,\n    baselineEnd: baselineEnd\n  })\n  .groupby(\"year\")\n  .derive({\n    ob_number: op.row_number()\n  })\n  .rollup({\n    temperature: op.mean(\"temperature\"),\n    n_obs: d => op.max(d.ob_number),\n  })\n  .ungroup()\n  .filter(d => d.n_obs == 12)\n  .derive({\n    date: d => op.parse_date(d.year + \"-07-01T00:00:00Z\"),\n    baselineYearTemp: d =>\n      (d.year >= baselineStart && d.year <= baselineEnd) ?\n        d.temperature : null\n  })\n  .derive({\n    anomaly: d => d.temperature - op.mean(d.baselineYearTemp)\n  })\n  .derive({\n    anomalySign: d => d.anomaly >= 0\n  })\n\n"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"\n// plot either monthly or annual data based on period selection\nselectedSeries = selectedPeriod == 0 ? annualTemps : filteredData\n\n// some options for conditionally showing parts of the chart:\n// - whether to show original temps or anomalies\n// - the window size to use for smoothing\n// showTemps = showAnomalies.includes(\"anomalies\")\n\n// window size in _years_\nwindowSize = 15\n\nPlot.plot({\n  marks: [\n    // if original temps: show line and smoother\n    showAnomalies.includes(\"anomalies\") ? null :\n      Plot.lineY(selectedSeries, {\n        x: \"date\",\n        y: showAnomalies.includes(\"anomalies\") ? \"anomaly\" : \"temperature\",\n        stroke: \"lightgrey\",\n        strokeWidth: 1,\n        tip: true,\n        title: d => `${selectedPeriodLabel} ${d.year}\\n${d3.format(\"-.2f\")(d.temperature)} °C\\n\\n${d3.format(\"+.2f\")(d.anomaly)} °C compared to\\n1986-2015 baseline`,\n        ariaDescription: d => `For ${selectedPeriodLabel} ${d.year}, the temperature was ${d3.format(\"-.2f\")(d.temperature)} °C, or ${d3.format(\"+.2f\")(d.anomaly)} °C compared to the 1986-2015 baseline.`\n      }),\n    showAnomalies.includes(\"anomalies\") ? null :\n      Plot.lineY(selectedSeries, Plot.windowY(windowSize, {\n        x: \"date\",\n        y: showAnomalies.includes(\"anomalies\") ? \"anomaly\" : \"temperature\",\n        stroke: \"black\",\n        tip: true,\n        title: d => `${selectedPeriodLabel} ${d.year}\\n${d3.format(\"-.2f\")(d.temperature)} °C\\n\\n${d3.format(\"+.2f\")(d.anomaly)} °C compared to\\n1986-2015 baseline`,\n        ariaDescription: d => `For ${selectedPeriodLabel} ${d.year}, the temperature was ${d3.format(\"-.2f\")(d.temperature)} °C, or ${d3.format(\"+.2f\")(d.anomaly)} °C compared to the 1986-2015 baseline.`\n      })),\n    // if anomalies: show bars, shaded by sign\n    showAnomalies.includes(\"anomalies\") ? Plot.ruleY([0]) : null,\n    showAnomalies.includes(\"anomalies\") ?\n      Plot.rectY(selectedSeries, {\n        x: \"date\",\n        y: \"anomaly\",\n        fill: \"anomalySign\",\n        interval: d3.utcYear,\n        tip: true,\n        title: d => `${selectedPeriodLabel} ${d.year}\\n${d3.format(\"-.2f\")(d.temperature)} °C\\n\\n${d3.format(\"+.2f\")(d.anomaly)} °C compared to\\n1986-2015 baseline`,\n        ariaDescription: d => `For ${selectedPeriodLabel} ${d.year}, the temperature was ${d3.format(\"-.2f\")(d.temperature)} °C, or ${d3.format(\"+.2f\")(d.anomaly)} °C compared to the 1986-2015 baseline.`\n      }) : null\n  ],\n  y: {\n    label: showAnomalies.includes(\"anomalies\") ?\n      \"Temperature (compared to \" + baselineStart + \"–\" + baselineEnd +\n        \" baseline)\" :\n      \"Temperature\",\n    labelArrow: \"none\",\n    tickFormat: (d) => showAnomalies.includes(\"anomalies\") ?\n      `${d3.format(\"+.1f\")(d)} °C` :\n      `${d3.format(\"-.1f\")(d)} °C`\n  },\n  x: {\n    label: \"Year\",\n    labelArrow: \"none\"\n  },\n  color: {\n    domain: [true, false],\n    range: [\"#d73027\", \"#4575b4\"]\n  },\n  marginLeft: 62,\n  marginBottom: 40,\n  style: {\n    fontSize: 14\n  }\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-6","inline":false,"source":"micro = require(\"micromodal@0.4.10\")\nmicro.init({\n  awaitOpenAnimation: true,\n  awaitCloseAnimation: true\n});\n"},{"methodName":"interpretQuiet","source":"shinyInput('selectedRegion')"},{"methodName":"interpretQuiet","source":"shinyInput('selectedPeriod')"},{"methodName":"interpretQuiet","source":"shinyInput('showAnomalies')"}]}
+</script>
+<script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+window._ojs.paths.runtimeToDoc = "../../vis-monthly";
+window._ojs.paths.runtimeToRoot = "../..";
+window._ojs.paths.docToRoot = "..";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+  tabsets.forEach(function(tabset) {
+    const tabby = new Tabby('#' + tabset.id);
+  });
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'light-border',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    if (id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        for (let i = 0; i < 2; i++) {
+          container.appendChild(note.children[i].cloneNode(true));
+        }
+        return container.innerHTML
+      } else {
+        return note.innerHTML;
+      }
+    } else {
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      try { hash = new URL(url).hash; } catch {}
+      const id = hash.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note !== null) {
+        try {
+          const html = processXRef(id, note);
+          instance.setContent(html);
+        } finally {
+          instance.enable();
+          instance.show();
+        }
+      } else {
+        // See if we can fetch this
+        fetch(url.split('#')[0])
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.getElementById(id);
+          console.log(htmlDoc.body.innerHTML);
+          if (note !== null) {
+            const html = processXRef(id, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+
+
+
+</body></html>

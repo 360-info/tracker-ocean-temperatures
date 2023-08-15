@@ -160,6 +160,17 @@ windowSize = 15
 
 Plot.plot({
   marks: [
+    Plot.text(selectedSeries, Plot.selectMaxX({
+      x: "date",
+      y: "anomaly",
+      text: d => `${d.year.toFixed(0)}\n${d3.format("+.2f")(d.anomaly)} °C`,
+      dx: 10,
+      lineAnchor: "top",
+      textAnchor: "start",
+      fontWeight: "bold",
+      fontSize: 11,
+      fill: "#d73027"
+    })),
     // if anomalies: show bars, shaded by sign
     Plot.ruleY([0]),
     Plot.rectY(selectedSeries, {
@@ -186,6 +197,7 @@ Plot.plot({
     range: ["#d73027", "#4575b4"]
   },
   marginLeft: 62,
+  marginRight: 55,
   marginBottom: 40,
   style: {
     fontSize: 14

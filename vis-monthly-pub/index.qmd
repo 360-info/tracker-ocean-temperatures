@@ -63,7 +63,9 @@ allRegionsMap = new Map(allRegions.map(d => [regionFormatter(d), d]))
 ```{ojs}
 //| label: controls
 
-viewof selectedRegion = Inputs.select(allRegionsMap)
+viewof selectedRegion = Inputs.select(allRegionsMap, {
+  value: "global_60s_to_60n"
+})
 
 calendarMonths = [
   "January", "February", "March", "April", "May", "June", "July", "August",

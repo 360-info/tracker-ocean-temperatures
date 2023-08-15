@@ -1,0 +1,16 @@
+title: 360-embed
+author: James Goldie
+version: 1.0.0
+quarto-required: ">=1.3.0"
+contributes:
+  formats:
+    html:
+      toc: false
+      theme: none
+      page-layout: custom
+      execute:
+        echo: false
+      css:
+        - embed.css
+        - modal.css
+        - https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css

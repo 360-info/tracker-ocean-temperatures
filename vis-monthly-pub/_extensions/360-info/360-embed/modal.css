@@ -1,0 +1,240 @@
+/* micromodal css: essentials for toggling/animating the dialog
+  (otherwise it just sits there on the page!)
+*/
+.modal .modal__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal .modal__container {
+  background-color: white;
+  color: black;
+  padding: 30px;
+  min-width: 350px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 50vh;
+  top: 25vh;
+  border-radius: 4px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes mmfadeIn {
+  from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes mmfadeOut {
+  from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes mmslideIn {
+  from { transform: translateY(15%); }
+    to { transform: translateY(0); }
+}
+
+@keyframes mmslideOut {
+  from { transform: translateY(0); }
+    to { transform: translateY(-10%); }
+}
+
+.micromodal-slide {
+  display: none;
+}
+
+.micromodal-slide.is-open {
+  display: block;
+}
+
+.micromodal-slide[aria-hidden="false"] .modal__overlay {
+  animation: mmfadeIn .3s cubic-bezier(0.0, 0.0, 0.2, 1);
+}
+
+.micromodal-slide[aria-hidden="false"] .modal__container {
+  animation: mmslideIn .3s cubic-bezier(0, 0, .2, 1);
+}
+
+.micromodal-slide[aria-hidden="false"] .modal__container::-webkit-scrollbar {
+  /* background-clip: padding-box; */
+  border-radius: 4px;
+  background: transparent;
+  width: 5px;
+}
+
+.micromodal-slide[aria-hidden="false"] .modal__container::-webkit-scrollbar-thumb {
+  background: lightgrey;
+  border-radius: 4px;
+}
+
+.micromodal-slide[aria-hidden="false"] .modal__container::-webkit-scrollbar-corner {
+  border-radius: 4px;
+}
+
+.micromodal-slide[aria-hidden="true"] .modal__overlay {
+  animation: mmfadeOut .3s cubic-bezier(0.0, 0.0, 0.2, 1);
+}
+
+.micromodal-slide[aria-hidden="true"] .modal__container {
+  animation: mmslideOut .3s cubic-bezier(0, 0, .2, 1);
+}
+
+.micromodal-slide .modal__container,
+.micromodal-slide .modal__overlay {
+  will-change: transform;
+}
+
+.modal .modal__close {
+  background:transparent;
+  border: 0;
+  float: right;
+  font-size: large;
+}
+
+.modal .modal__close::before {
+  content: "\2715";
+}
+
+.modal__container h2 {
+  /* to align title with close button */
+  margin-block-start: 0
+}
+
+.modalpanel {
+  padding: 13px;
+  
+  float: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-flow: column;
+  align-items: end;
+  gap: 0.25rem;
+
+  font-size: 80%;
+
+  /* to maintain readability over a map */
+  z-index: 1000;
+  background-color: #ffffffcc;
+}
+
+.modalpanelitems {
+  font-size: 125%;
+  display: flex;
+  flex-flow: row;
+  justify-content: end;
+  gap: 0.75rem;
+}
+
+.modalpanel p {
+  margin: 0;
+  display: flex;
+  flex-flow: row;
+  gap: 1rem;
+  text-align: end;
+  hyphens: manual;
+}
+
+/* shrink modal panel text at small widths */
+@media (max-width: 45em) {
+  .modalpanel p {
+    font-size: 80%;
+  }
+}
+
+@media (max-width: 34em) {
+  .modalpanel p {
+    font-size: 70%;
+  }
+}
+
+.modalpanel a {
+  text-decoration: none;
+  text-transform: uppercase;
+  color: black;
+  font-weight: bold;
+}
+
+/* editor share banner */
+#edshare {
+  position: absolute;
+  top: 25%;
+  right: 0;
+  z-index: 1000;
+  visibility: hidden;
+  opacity: 1;
+  
+  transition: background 0.25s, color 0.5s, opacity 2s;
+  
+  width: 250px;
+  padding: 10px;
+  border-radius: 8px 0 0 8px;
+  color: black;
+  cursor: pointer;
+
+  align-items: center;
+  gap: 10px;
+}
+
+#edshare-title {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  pointer-events: none;
+}
+
+#edshare-description {
+  margin-block-start: 0.5em;
+  margin-block-end: 0;
+  pointer-events: none;
+  text-transform: uppercase;
+  /* de-emphasise a bit */
+  font-size: smaller;
+  opacity: 0.8;
+  letter-spacing: 0.0125rem;
+}
+
+#edshare-icon {
+  font-size: 2.5rem;
+}
+
+#edshare.ready {
+  display: flex;
+  visibility: visible;
+
+  /* animation when ready to be clicked */
+  animation: shimmer 2.5s infinite;
+  background: linear-gradient(65deg, gold 4%, rgb(233, 171, 15) 25%, gold 36%);
+  background-size: 2000px 100%;
+  box-shadow: 0px 5px 10px 5px #f2b70533;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+#edshare.clicked {
+  display: flex;
+  visibility: visible;
+  background: #0f7a48;
+  box-shadow: 0px 5px 10px 5px #0f7a4833;
+  color: white;
+}
+
+#edshare.clicked.done {
+  opacity: 0;
+}

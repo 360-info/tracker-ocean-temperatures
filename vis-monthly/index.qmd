@@ -1,0 +1,231 @@
+---
+title: Ocean temperatures
+format:
+  360-embed-html: default
+360embed:
+  before: |
+    &lt;iframe allow=&quot;fullscreen&quot; allowfullscreen=&quot;true&quot; src=&quot;
+  # uncomment and modify this line for production
+  # url: https://feb2023.360info-heatmaps-narclim.pages.dev/news/
+  after: |
+    &quot; title=&quot;Interactive: future heat&quot; style=&quot;width:100%; height:500px; border:none; background-color: white;&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt;
+---
+
+{{< include _popup-buttons.qmd >}}
+
+```{ojs}
+//| label: import
+import { aq, op } from "@uwdata/arquero"
+Plot = import("https://esm.run/@observablehq/plot")
+
+dataPath = "https://raw.githubusercontent.com/" +
+  "360-info/tracker-ocean-temperatures/main/data/" +
+  "monthly-all.csv"
+
+// get the latest monthly data
+allData = aq.loadCSV(dataPath, {
+  parse: {
+    temperature: Number,
+    date: op.parse_date
+  }
+})
+```
+
+```{ojs}
+//| label: region-list
+
+// format regions in title case with underscores replaced by spaces
+function regionFormatter(str) {  
+    return str
+      .replaceAll("_", " ")
+      .replace(/\w\S*/g,  
+        function (txt) {  
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();  
+        })
+      .replaceAll("60s To 60n", "(excl. polar regions)")
+      .replaceAll("Of", "of")
+      .replaceAll("And ", "and ")
+}
+
+// get a map of unique region names in the data for the dropdown menu
+// (remove a few that we don't want to show in this version)
+allRegions = allData
+  .select("region")
+  .dedupe()
+  .array("region")
+
+allRegionsMap = new Map(allRegions.map(d => [regionFormatter(d), d]))
+```
+
+```{ojs}
+//| label: controls
+
+viewof selectedRegion = Inputs.select(allRegionsMap)
+
+calendarMonths = [
+  "January", "February", "March", "April", "May", "June", "July", "August",
+  "September", "October", "November", "December"]
+possibleMonths = new Map([
+  ["Yearly average", 0], ...calendarMonths.map((d, i) => [d, i + 1])])
+
+previousMonth = (new Date()).getMonth()
+defaultMonth = (previousMonth) == 0 ? 12 : previousMonth
+viewof selectedPeriod = Inputs.select(possibleMonths, {
+  value: defaultMonth
+})
+
+// this feels overwrought
+selectedPeriodLabel = selectedPeriod >= 1 ?
+  calendarMonths[selectedPeriod - 1] :
+  "Yearly average"
+
+viewof showAnomalies = Inputs.checkbox(
+  new Map([["Compare to the 1986–2015 baseline", "anomalies"]]), {
+    value: ["anomalies"]
+  })
+
+```
+
+```{ojs}
+//| label: filter-data
+
+baselineStart = 1986
+baselineEnd = 2015
+
+// extract month and year, then filter on user selections
+regionData = allData
+  .params({
+    selectedPeriod: selectedPeriod,
+    selectedRegion: selectedRegion,
+    baselineStart: baselineStart,
+    baselineEnd: baselineEnd
+  })
+  .filter(d => d.region == selectedRegion)
+  .derive({
+    month: d => op.month(d.date) + 1,
+    year: d => op.year(d.date)
+  })
+  .groupby("month")
+  .derive({
+    baselineYearTemp: d =>
+      (d.year >= baselineStart && d.year <= baselineEnd) ?
+        d.temperature : null
+  })
+  .derive({
+    anomaly: d => d.temperature - op.mean(d.baselineYearTemp)
+  })
+  .derive({
+    anomalySign: d => d.anomaly >= 0
+  })
+  .ungroup()
+
+filteredData = regionData.filter(d => selectedPeriod == d.month)
+
+// separately calculate annual data if that's selected
+// (drop incomplete years, and calculate a baseline if the data allows)
+annualTemps = regionData
+  .params({
+    baselineStart: baselineStart,
+    baselineEnd: baselineEnd
+  })
+  .groupby("year")
+  .derive({
+    ob_number: op.row_number()
+  })
+  .rollup({
+    temperature: op.mean("temperature"),
+    n_obs: d => op.max(d.ob_number),
+  })
+  .ungroup()
+  .filter(d => d.n_obs == 12)
+  .derive({
+    date: d => op.parse_date(d.year + "-07-01T00:00:00Z"),
+    baselineYearTemp: d =>
+      (d.year >= baselineStart && d.year <= baselineEnd) ?
+        d.temperature : null
+  })
+  .derive({
+    anomaly: d => d.temperature - op.mean(d.baselineYearTemp)
+  })
+  .derive({
+    anomalySign: d => d.anomaly >= 0
+  })
+
+```
+
+```{ojs}
+//| label: vis-data
+
+// plot either monthly or annual data based on period selection
+selectedSeries = selectedPeriod == 0 ? annualTemps : filteredData
+
+// some options for conditionally showing parts of the chart:
+// - whether to show original temps or anomalies
+// - the window size to use for smoothing
+// showTemps = showAnomalies.includes("anomalies")
+
+// window size in _years_
+windowSize = 15
+
+Plot.plot({
+  marks: [
+    // if original temps: show line and smoother
+    showAnomalies.includes("anomalies") ? null :
+      Plot.lineY(selectedSeries, {
+        x: "date",
+        y: showAnomalies.includes("anomalies") ? "anomaly" : "temperature",
+        stroke: "lightgrey",
+        strokeWidth: 1,
+        tip: true,
+        title: d => `${selectedPeriodLabel} ${d.year}\n${d3.format("-.2f")(d.temperature)} °C\n\n${d3.format("+.2f")(d.anomaly)} °C compared to\n1986-2015 baseline`,
+        ariaDescription: d => `For ${selectedPeriodLabel} ${d.year}, the temperature was ${d3.format("-.2f")(d.temperature)} °C, or ${d3.format("+.2f")(d.anomaly)} °C compared to the 1986-2015 baseline.`
+      }),
+    showAnomalies.includes("anomalies") ? null :
+      Plot.lineY(selectedSeries, Plot.windowY(windowSize, {
+        x: "date",
+        y: showAnomalies.includes("anomalies") ? "anomaly" : "temperature",
+        stroke: "black",
+        tip: true,
+        title: d => `${selectedPeriodLabel} ${d.year}\n${d3.format("-.2f")(d.temperature)} °C\n\n${d3.format("+.2f")(d.anomaly)} °C compared to\n1986-2015 baseline`,
+        ariaDescription: d => `For ${selectedPeriodLabel} ${d.year}, the temperature was ${d3.format("-.2f")(d.temperature)} °C, or ${d3.format("+.2f")(d.anomaly)} °C compared to the 1986-2015 baseline.`
+      })),
+    // if anomalies: show bars, shaded by sign
+    showAnomalies.includes("anomalies") ? Plot.ruleY([0]) : null,
+    showAnomalies.includes("anomalies") ?
+      Plot.rectY(selectedSeries, {
+        x: "date",
+        y: "anomaly",
+        fill: "anomalySign",
+        interval: d3.utcYear,
+        tip: true,
+        title: d => `${selectedPeriodLabel} ${d.year}\n${d3.format("-.2f")(d.temperature)} °C\n\n${d3.format("+.2f")(d.anomaly)} °C compared to\n1986-2015 baseline`,
+        ariaDescription: d => `For ${selectedPeriodLabel} ${d.year}, the temperature was ${d3.format("-.2f")(d.temperature)} °C, or ${d3.format("+.2f")(d.anomaly)} °C compared to the 1986-2015 baseline.`
+      }) : null
+  ],
+  y: {
+    label: showAnomalies.includes("anomalies") ?
+      "Temperature (compared to " + baselineStart + "–" + baselineEnd +
+        " baseline)" :
+      "Temperature",
+    labelArrow: "none",
+    tickFormat: (d) => showAnomalies.includes("anomalies") ?
+      `${d3.format("+.1f")(d)} °C` :
+      `${d3.format("-.1f")(d)} °C`
+  },
+  x: {
+    label: "Year",
+    labelArrow: "none"
+  },
+  color: {
+    domain: [true, false],
+    range: ["#d73027", "#4575b4"]
+  },
+  marginLeft: 62,
+  marginBottom: 40,
+  style: {
+    fontSize: 14
+  }
+})
+```
+
+{{< include _popup-dialogs.qmd >}}

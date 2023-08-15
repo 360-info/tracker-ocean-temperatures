@@ -1,0 +1,127 @@
+:::: {.modalpanel}
+
+::: {.modalpanelitems}
+
+```{=html}
+<!-- check https://icons.getbootstrap.com for icons! -->
+
+<a href="#" data-micromodal-trigger="modal-useremix" aria-label="Share dialog" role="button" tabindex="0">
+  <i class="bi bi-share-fill"></i>
+</a>
+
+<a href="#" data-micromodal-trigger="modal-about" aria-label="More information" role="button" tabindex="0">
+  <i class="bi bi-info-circle-fill"></i>
+</a>
+
+<a id="fullscreenButton" aria-label="Fullscreen" role="button" href="#"  tabindex="0">
+  <span class="fsoff">
+    <i class="bi bi-arrows-fullscreen"></i>
+  </span>
+</a>
+
+<!-- full screen button script -->
+<script>
+  window.addEventListener("load", () => {
+    document.querySelector("#fullscreenButton").addEventListener("click", e => {
+      e.preventDefault();
+      console.log("FS button clicked!");
+
+      var fsBtn = document.querySelector("#fullscreenButton");
+
+      if (fsBtn.classList.contains("fsmode")) {
+        // fullscreen is on: disable it
+        document.exitFullscreen();
+        fsBtn.classList.remove("fsmode")
+      } else {
+        // fullscreen is off: enable it
+        var rootEl = document.documentElement;
+
+        var requestMethod =
+          rootEl.requestFullScreen ||
+          rootEl.webkitRequestFullScreen ||
+          rootEl.mozRequestFullScreen ||
+          rootEl.msRequestFullScreen;
+
+          if (requestMethod) {
+            requestMethod.call(rootEl);
+            fsBtn.classList.add("fsmode");
+          } else {
+            alert("Fullscreen mode isn't supported on this browser.")
+          }
+      }
+    });
+  })
+</script>
+```
+:::
+
+<!-- if there's room here, put credits on two lines:
+  * Editor names, 360info (hint: put &shy; in the middle of long names!)
+  * Data: ORG
+  (if there isn't room, put it in the ABOUT dialog) -->
+James Goldie, 360info
+
+Data: NOAA PSL
+
+::::
+
+<!-- finally, here's the EDITOR SHARE button. it's a quick way to copy the
+     embed code for editors and will only appear if ?edshare=true is in the
+     url (that way it'll appear on the newswire but not subsequent shares) -->
+
+```{=html}
+<div id="edshare">
+  <i id="edshare-icon" class="bi bi-clipboard2-plus-fill"></i>
+  <div>
+    <h4 id="edshare-title">GET THIS MAP</h4>
+    <p id="edshare-description">Click to copy this into your story</p>
+  </div>
+</div>
+```
+
+<!-- editor share banner: enable if ?edshare is in the url -->
+```{=html}
+<script>
+  window.addEventListener("load", () => {
+    pageURL = new URL(window.location.href);
+    edshare = pageURL.searchParams.get("edshare");
+    
+    edshareBtn = document.querySelector("#edshare");
+    if (edshare === null) {
+      edshareBtn.style.display = "none";
+    } else {
+    
+      edshareBtn.classList.add("ready");
+    
+      edshareBtn.addEventListener("click", () => {
+
+        // copy the embed code to the clipboard
+        navigator.clipboard.writeText(
+          `{{< meta 360embed.before >}}{{< meta 360embed.url >}}{{< meta 360embed.after >}}`);
+
+        // update button styles and content
+        edshareBtn.classList.remove("ready");
+        edshareBtn.classList.add("clicked");
+
+        edshareIcon = document.querySelector("#edshare-icon");
+        edshareIcon.removeAttribute("class");
+        edshareIcon.classList.add("bi");
+        edshareIcon.classList.add("bi-check");
+
+        edshareTitle = document.querySelector("#edshare-title");
+        edshareTitle.innerText = "COPIED!";
+
+        edshareDescription = document.querySelector("#edshare-description");
+        edshareDescription.innerHTML =
+          `Paste this interactive with the <i class="bi bi-code-square"></i> Embed button in your story editor.</br></br>
+          
+          Please remember to <strong>attribute 360info and our data sources.</strong>`
+
+        // button exit animation
+        setTimeout(() => {  edshareBtn.classList.add("done"); }, 5000);
+        setTimeout(() => {  edshareBtn.style.display = "none"; }, 7000);
+      });
+    }
+  });
+</script>
+```

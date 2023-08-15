@@ -1,5 +1,11 @@
 ---
 title: Ocean temperatures
+description: Monitor rising ocean temperatures around the world
+twitter-card:
+  site: "@360info_global"
+  image: "/assets/hotoceans-banner.png"
+open-graph:
+  image: "/assets/hotoceans-banner.png"
 format:
   360-embed-html: default
 360embed:

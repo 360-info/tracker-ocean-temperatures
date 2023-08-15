@@ -169,7 +169,8 @@ Plot.plot({
       textAnchor: "start",
       fontWeight: "bold",
       fontSize: 11,
-      fill: "#d73027"
+      fill: "#d73027",
+      stroke: "white"
     })),
     // if anomalies: show bars, shaded by sign
     Plot.ruleY([0]),
@@ -184,7 +185,7 @@ Plot.plot({
     })
   ],
   y: {
-    label: `Temperature (compared to ${baselineStart}–${baselineEnd} baseline)`,
+    label: `Temperature\n(compared to 1986–2015 baseline)`,
     labelArrow: "none",
     tickFormat: (d) =>  `${d3.format("+.1f")(d)} °C`
   },
@@ -199,6 +200,7 @@ Plot.plot({
   marginLeft: 62,
   marginRight: 55,
   marginBottom: 40,
+  marginTop: 40,
   style: {
     fontSize: 14
   }

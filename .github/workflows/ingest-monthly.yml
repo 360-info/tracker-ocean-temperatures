@@ -58,7 +58,7 @@ jobs:
         run: Rscript analysis-oceantemps/ingest-monthly.r --overwrite=true
 
       - name: Run the analysis (manual)
-        if: env.MONTHLY_IS_STALE || inputs.overwrite
+        if: github.event_name == 'workflow_dispatch' && (env.MONTHLY_IS_STALE || inputs.overwrite)
         run: |
           Rscript analysis-oceantemps/ingest-monthly.r \
             --overwrite=${{ inputs.overwrite }}

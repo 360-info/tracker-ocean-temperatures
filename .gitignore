@@ -15,6 +15,3 @@ Thumbs.db
 # quarto
 /.quarto/
 
-# output folder (you may want to exclude files when we publish!)
-/out/*
-!/out

@@ -1,6 +1,6 @@
 # [Ocean temperature tracker]
 
-Updates with ocean temperatures from around the world. Daily and monthly updates are available.
+Updates with ocean temperatures from around the world. Daily and monthly updates are available. 
 
 ## ♻️ Use + Remix rights
 

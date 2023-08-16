@@ -2,6 +2,8 @@
 
 Updates with ocean temperatures from around the world. Daily and monthly updates are available.
 
+## 📦 [Get the data](data) • 📊 [Get the chart](https://aug2023.360info-tracker-ocean-temperatures.pages.dev/vis-monthly-pub)
+
 ## ♻️ Use + Remix rights
 
 ![[Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0)](https://mirrors.creativecommons.org/presskit/buttons/80x15/png/by.png)
@@ -24,17 +26,19 @@ The daily data are updated each day from NOAA, while the monthly data are update
 
 ## 💻 Reproduce the analysis
 
-### Quickstart: use the dev container
+The analysis scripts in this project are designed to run in the cloud using GitHub Actions. The GitHub Actions workflow files are in the [`.github/workflows`](.github/workflows) folder; the R scripts themselves are in [`analysis-oceantemps`](analysis-oceantemps).
 
-This project comes with a ready-to-use [dev container](https://code.visualstudio.com/docs/remote/containers) that includes everything you need to reproduce the analysis (or do a similar one of your own!), including [R](https://r-project.org) and [Quarto](https://quarto.org).
+The chart comes in two flavours:
 
-1. [Launch this project in GitHub Codespaces](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=[report_codespaces_id])
-2. If you have Docker installed, you can build and run the container locally:
-  - Download or clone the project
-  - Open it in [Visual Studio Code](https://code.visualstudio.com)
-  - Run the **Remote-Containers: Reopen in Container** command
+* A publication-ready one with fewer options but some extra features for editorial use is in `vis-monthly-pub`; and
+* An expanded version (more regions, toggle between between observed temperatures and anomalies) is in `vis-monthly`.
 
-Once the container has launched (it might take a few minutes to set up the first time), you can run the analysis scripts with:
+If you have Quarto installed, you can render the charts using:
+
+```bash
+quarto render
+quarto preview
+```
 
 ## ❓ Help
 

@@ -2,9 +2,9 @@
 # workflow to test sverto
 
 on:
-  # check at 9am/3pm AEST from 14-20th of the month
+  # check at 9am AEST every day of the month
   schedule:
-    - cron: '0 0,1,2,3,4,5,23 14,15,16,17,18,19,20 * *'
+    - cron: '0 23 * * *'
   workflow_dispatch:
     inputs:
       overwrite:

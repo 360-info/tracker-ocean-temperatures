@@ -1,5 +1,5 @@
 
-# workflow to test sverto
+# workflow to update monthly ocean temps
 
 on:
   # check at 9am AEST every day of the month

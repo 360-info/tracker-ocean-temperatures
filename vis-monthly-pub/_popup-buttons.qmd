@@ -95,9 +95,23 @@ Data: NOAA PSL
     
       edshareBtn.addEventListener("click", () => {
 
+        // get potential url fragments to add to embed code
+        const pageURL = new URL(window.location.href);
+        let fragments = [];
+        const monthChoice = pageURL.searchParams.get("month");
+        const regionChoice = pageURL.searchParams.get("region");
+        if (monthChoice !== undefined) {
+          fragments.push("month=" + monthChoice);
+        }
+        if (regionChoice !== undefined) {
+          fragments.push("region=" + regionChoice);
+        }
+        const fragmentString = fragments.join("&");
+
+
         // copy the embed code to the clipboard
         navigator.clipboard.writeText(
-          `{{< meta 360embed.before >}}{{< meta 360embed.url >}}{{< meta 360embed.after >}}`);
+          `{{< meta 360embed.before >}}{{< meta 360embed.url >}}?${fragmentString}{{< meta 360embed.after >}}`);
 
         // update button styles and content
         edshareBtn.classList.remove("ready");

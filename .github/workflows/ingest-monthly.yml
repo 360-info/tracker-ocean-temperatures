@@ -4,7 +4,7 @@
 on:
   # check at 9am/3pm AEST from 14-20th of the month
   schedule:
-    - cron: '0 23,5 14,15,16,17,18,19,20 * *'
+    - cron: '0 0,1,2,3,4,5,23 14,15,16,17,18,19,20 * *'
   workflow_dispatch:
     inputs:
       overwrite:
@@ -58,7 +58,7 @@ jobs:
         run: Rscript analysis-oceantemps/ingest-monthly.r --overwrite=true
 
       - name: Run the analysis (manual)
-        if: env.MONTHLY_IS_STALE || inputs.overwrite
+        if: github.event_name == 'workflow_dispatch' && (env.MONTHLY_IS_STALE || inputs.overwrite)
         run: |
           Rscript analysis-oceantemps/ingest-monthly.r \
             --overwrite=${{ inputs.overwrite }}

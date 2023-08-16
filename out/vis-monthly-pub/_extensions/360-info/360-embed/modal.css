@@ -168,7 +168,7 @@
 /* editor share banner */
 #edshare {
   position: absolute;
-  top: 25%;
+  top: 35%;
   right: 0;
   z-index: 1000;
   visibility: hidden;

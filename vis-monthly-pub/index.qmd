@@ -14,7 +14,7 @@ format:
     &lt;iframe allow=&quot;fullscreen; clipboard-write self https://aug2023.360info-tracker-ocean-temperatures.pages.dev&quot; allowfullscreen=&quot;true&quot; src=&quot;
   url: https://aug2023.360info-tracker-ocean-temperatures.pages.dev/vis-monthly-pub/
   after: |
-    &quot; title=&quot;Interactive: ocean temperatures&quot; style=&quot;width:100%; height:100%; position: absolute; top: 0; left: 0; border:none; background-color: white;&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt;&gt;
+    &quot; title=&quot;Interactive: ocean temperatures&quot; style=&quot;width:100%; height:100%; position: absolute; top: 0; left: 0; border:none; background-color: white;&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt;
     &lt;/div&gt;
 ---
 
@@ -69,8 +69,16 @@ allRegionsMap = new Map(allRegions.map(d => [regionFormatter(d), d]))
 ```{ojs}
 //| label: controls
 
+// has someone provided a default region via a URL parameter?
+// test it against the region list, defaulting to global
+defaultRegion = {
+  const pageURL = new URL(window.location.href)
+  const regionChoice = pageURL.searchParams.get("region")
+  return allRegions.includes(regionChoice) ? regionChoice : "global_60s_to_60n"
+}
+
 viewof selectedRegion = Inputs.select(allRegionsMap, {
-  value: "global_60s_to_60n"
+  value: defaultRegion
 })
 
 calendarMonths = [
@@ -80,7 +88,19 @@ possibleMonths = new Map([
   ["Yearly average", 0], ...calendarMonths.map((d, i) => [d, i + 1])])
 
 previousMonth = (new Date()).getMonth()
-defaultMonth = (previousMonth) == 0 ? 12 : previousMonth
+
+// has someone provided a default month via a URL parameter?
+// test it against the period list, defaulting to global
+defaultMonth = {
+  const pageURL = new URL(window.location.href)
+  const monthChoice = parseInt(pageURL.searchParams.get("month"))
+  return Array.from(possibleMonths, d => d[1]).includes(monthChoice) ?
+    monthChoice :
+    (previousMonth) == 0 ?
+      12 :
+      previousMonth
+}
+
 viewof selectedPeriod = Inputs.select(possibleMonths, {
   value: defaultMonth
 })

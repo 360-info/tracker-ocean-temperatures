@@ -54,11 +54,11 @@ jobs:
       # when it successfully runs
 
       - name: Run the analysis (scheduled update)
-        if: github.event_name == 'schedule' && env.MONTHLY_IS_STALE
+        if: github.event_name == 'schedule' && Boolean(env.MONTHLY_IS_STALE)
         run: Rscript analysis-oceantemps/ingest-monthly.r --overwrite=true
 
       - name: Run the analysis (manual)
-        if: github.event_name == 'workflow_dispatch' && (env.MONTHLY_IS_STALE || inputs.overwrite)
+        if: github.event_name == 'workflow_dispatch' && (Boolean(env.MONTHLY_IS_STALE) || inputs.overwrite)
         run: |
           Rscript analysis-oceantemps/ingest-monthly.r \
             --overwrite=${{ inputs.overwrite }}
@@ -83,7 +83,7 @@ jobs:
             {
               "event_type": "${{ github.event_name }}",
               "run_end": "${{ env.MONTHLY_RUN_END }}",
-              "outcome_emoji": "${{ (!env.MONTHLY_IS_STALE) && '⏰' || env.MONTHLY_UPDATED && '✅' || '❓' }}",
-              "outcome_long": "${{ (!env.MONTHLY_IS_STALE) && 'Update skipped (no new obs)' || env.MONTHLY_UPDATED && 'New observations added!' || 'Workflow successfully executed, but the analysis script did not sign off properly. Something may not be right—this should be followed up.' }}",
+              "outcome_emoji": "${{ (!Boolean(env.MONTHLY_IS_STALE)) && '⏰' || Boolean(env.MONTHLY_UPDATED) && '✅' || '❓' }}",
+              "outcome_long": "${{ (!Boolean(env.MONTHLY_IS_STALE)) && 'Update skipped (no new obs)' || Boolean(env.MONTHLY_UPDATED) && 'New observations added!' || 'Workflow successfully executed, but the analysis script did not sign off properly. Something may not be right—this should be followed up.' }}",
               "workflow_name": "Ocean data tracker: monthly ingest"
             }

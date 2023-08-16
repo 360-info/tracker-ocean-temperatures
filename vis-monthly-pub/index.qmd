@@ -10,7 +10,7 @@ format:
   360-embed-html: default
 360embed:
   before: |
-    &lt;div style=&quot;position:relative; padding-bottom: 70%&quot;&gt;
+    &lt;div style=&quot;position:relative; padding-bottom: 85%&quot;&gt;
     &lt;iframe allow=&quot;fullscreen; clipboard-write self https://aug2023.360info-tracker-ocean-temperatures.pages.dev&quot; allowfullscreen=&quot;true&quot; src=&quot;
   url: https://aug2023.360info-tracker-ocean-temperatures.pages.dev/vis-monthly-pub/
   after: |
@@ -201,7 +201,6 @@ Plot.plot({
       fill: "#d73027",
       stroke: "white"
     })),
-    // if anomalies: show bars, shaded by sign
     Plot.ruleY([0]),
     Plot.rectY(selectedSeries, {
       x: "date",
@@ -214,7 +213,7 @@ Plot.plot({
     })
   ],
   y: {
-    label: `Temperature\n(compared to 1986–2015 baseline)`,
+    label: `Temperature\n(compared to 1986–2015 average)`,
     labelArrow: "none",
     tickFormat: (d) =>  `${d3.format("+.1f")(d)} °C`
   },

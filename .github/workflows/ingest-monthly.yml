@@ -71,7 +71,7 @@ jobs:
           git add data/monthly/*
           git add data/monthly-all.csv
           git add data/last-monthly-update.txt
-          git diff-index --quiet HEAD ||commit -m "Ingest new results via GitHub Actions"
+          git diff-index --quiet HEAD || git commit -m "Ingest new results via GitHub Actions"
           git push
 
       - name: Update Slack

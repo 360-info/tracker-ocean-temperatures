@@ -50,7 +50,7 @@ jobs:
         id: check-update
         run: Rscript analysis-oceantemps/check-monthly.r
       
-      # analysis sets env.MONTHLY_UPDATED=true and end.MONTHLY_UPDATE_TIME=...
+      # analysis sets env.MONTHLY_UPDATED=TRUE and end.MONTHLY_UPDATE_TIME=...
       # when it successfully runs
       # (R puts out uppercase strings for env vars, not actual bools)
 

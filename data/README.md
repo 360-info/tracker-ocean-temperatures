@@ -54,10 +54,7 @@ We use this data to surface the tracker on dataset searches like [Google Dataset
     <tr>
       <td>description</td>
       <td>
-        <code itemprop="description">Monthly timeseries of average surface temperatures across
-          oceans, seas and the globe. This dataset updates regularly based on upstream updates from
-          [NOAA PSL's OI SST v2](https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.highres.html)
-          .</code>
+        <code itemprop="description">Monthly timeseries of average surface temperatures across oceans, seas and the globe. This dataset updates regularly based on upstream updates from [NOAA PSL's OI SST v2](https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.highres.html).</code>
       </td>
     </tr>
     <tr>

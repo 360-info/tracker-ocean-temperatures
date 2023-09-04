@@ -1,8 +1,198 @@
 
-# `RECCAP2_region_masks_all_v20221025.nc`
+# `/data`
 
-Masks for various ocean basins. In these files, each variable is an ocean. The variable is 0 for masked-out areas (eg. land or other oceans) or an integer greater than 0 for a region within the ocean. Each ocean is broken up into sub-regions (1, 2, 3, etc.).
+This dataset updates monthly based on upstream updates from [NOAA PSL's OI SST v2](https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.highres.html) dataset ([Huang, B et al. 2021](https://doi.org/10.1175/JCLI-D-20-0166.1)).
+
+## Processed data
+
+The processed observations are in two places:
+
+- `monthly-all.csv` contains observations for all regions
+- `monthly/[region].csv` contains observations for a single region
+
+If you want to create a chart that updates automatically based on one of these files (eg. in Flourish, which [supports live data sources](https://help.flourish.studio/article/163-how-to-connect-to-live-data-sources)), navigate to one of these files in GitHub, click on the "Raw" button and then copy the URL from the address bar (do not right-click the button and copy the link—it redirects).
+
+For example, the raw URL for `monthly-all.csv` is:
+
+```
+https://raw.githubusercontent.com/360-info/tracker-ocean-temperatures/main/data/monthly-all.csv
+```
+
+## Mask file
+
+`RECCAP2_region_masks_all_v20221025.nc` contains masks for various ocean basins. In these files, each variable is an ocean. The variable is 0 for masked-out areas (eg. land or other oceans) or an integer greater than 0 for a region within the ocean. Each ocean is broken up into sub-regions (1, 2, 3, etc.).
 
 Masks are on a 1° by 1° grid, which is regridded to 0.25° by 0.25° to match the observations.
 
 Masks are from [Fay, A. R., & McKinley, G. A. (2014)](https://doi.org/10.5194/essd-6-273-2014) via [the RECCAP2 project](https://github.com/RECCAP2-ocean/R2-shared-resources/) and are available [under Creative Commons Attribution 3.0](https://doi.pangaea.de/10.1594/PANGAEA.828650).
+
+## Other files
+
+`basins.csv` and `boxes.csv` defines the regions processed by our analysis script (so changing them will add or change the regions output).
+
+- `basins.csv` defines regions using the variables and region values in the RECCAP2 masks file (`RECCAP2_region_masks_all_v20221025.nc`)
+- `boxes.csv` defines regions using latitude-longitude boxes
+
+`last-monthly-update.text` is a datestamp of the time of the last update on NOAA's end. We save this at the end of an update to avoid unnecessary updates when no new data is available.
+
+## Dataset metadata
+
+We use this data to surface the tracker on dataset searches like [Google Dataset Search](https://datasetsearch.research.google.com/).
+
+<div itemscope itemtype="http://schema.org/Dataset">
+  <table>
+    <tr>
+      <th>property</th>
+      <th>value</th>
+    </tr>
+    <tr>
+      <td>name</td>
+      <td><code itemprop="name">Ocean surface temperature tracker</code></td>
+    </tr>
+      <tr>
+      <td>description</td>
+      <td><code itemprop="description">Monthly timeseries of average surface temperatures across oceans, seas and the globe. This dataset updates regularly based on upstream updates from [NOAA PSL's OI SST v2](https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.highres.html) .</code></td>
+    </tr>
+    </tr>
+      <tr>
+      <td>sameAs</td>
+      <td><code itemprop="sameAs">https://github.com/360-info/tracker-ocean-temperatures/blob/main/data/README.md</code></td>
+    </tr>
+    </tr>
+      <tr>
+      <td>license</td>
+      <td><code itemprop="license">https://creativecommons.org/licenses/by/4.0/</code></td>
+    </tr>
+    </tr>
+      <tr>
+      <td>isAccessibleForFree</td>
+      <td><code itemprop="isAccessibleForFree">true</code></td>
+    </tr>
+    </tr>
+      <tr>
+      <td>keywords</td>
+      <td><code itemprop="keywords">ocean</code></td>
+    </tr>
+    </tr>
+      <tr>
+      <td>keywords</td>
+      <td><code itemprop="keywords">climate change</code></td>
+    </tr>
+    </tr>
+      <tr>
+      <td>keywords</td>
+      <td><code itemprop="keywords">global warming</code></td>
+    </tr>
+    </tr>
+      <tr>
+      <td>keywords</td>
+      <td><code itemprop="keywords">sea surface temperature</code></td>
+    </tr>
+    </tr>
+      <tr>
+      <td>keywords</td>
+      <td><code itemprop="keywords">sst</code></td>
+    </tr>
+    <tr>
+      <td>distribution</td>
+      <td>
+        <div itemscope itemtype="http://schema.org/DataDownload" itemprop="DataDownload">
+          <table>
+            <tr>
+              <th>property</th>
+              <th>value</th>
+            </tr>
+            <tr>
+              <td>@type</td>
+              <td><code itemprop="@type">DataDownload</code></td>
+            </tr>
+            <tr>
+              <td>encodingFormat</td>
+              <td><code itemprop="encodingFormat">CSV</code></td>
+            </tr>
+            <tr>
+              <td>contentUrl</td>
+              <td><code itemprop="contentUrl">https://github.com/360-info/tracker-ocean-temperatures/raw/main/data/monthly-all.csv</code></td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>creator</td>
+      <td>
+        <div itemscope itemtype="http://schema.org/Organization" itemprop="creator">
+          <table>
+            <tr>
+              <th>property</th>
+              <th>value</th>
+            </tr>
+            <tr>
+              <td>@type</td>
+              <td><code itemprop="@type">Organization</code></td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td><code itemprop="name">360info</code></td>
+            </tr>
+            <tr>
+              <td>sameAs</td>
+              <td><code itemprop="sameAs">https://360info.org</code></td>
+            </tr>
+            <tr>
+              <td>logo</td>
+              <td><code itemprop="logo">https://360info.org/wp-content/uploads/2023/03/360-Logos_HD_BLACK_TAG.png</code></td>
+            </tr>
+            <tr>
+              <td>publishingPrinciples</td>
+              <td><code itemprop="publishingPrinciples">https://360info.org/about-us/editorial-policies/</code></td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+    </tr>
+      <tr>
+      <td>temporalCoverage</td>
+      <td><code itemprop="temporalCoverage">1981-09-01/..</code></td>
+    </tr>
+    <tr>
+      <td>spatialCoverage</td>
+      <td>
+        <div itemscope itemtype="http://schema.org/Place" itemprop="spatialCoverage">
+          <table>
+            <tr>
+              <th>property</th>
+              <th>value</th>
+            </tr>
+            <tr>
+              <td>@type</td>
+              <td><code itemprop="@type">Place</code></td>
+            </tr>
+            <tr>
+              <td>geo</td>
+              <td>
+                <div itemscope itemtype="http://schema.org/GeoShape" itemprop="creator">
+                  <table>
+                    <tr>
+                      <th>property</th>
+                      <th>value</th>
+                    </tr>
+                    <tr>
+                      <td>@type</td>
+                      <td><code itemprop="@type">GeoShape</code></td>
+                    </tr>
+                    <tr>
+                      <td>box</td>
+                      <td><code itemprop="name">-85 -180 85 180</code></td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>

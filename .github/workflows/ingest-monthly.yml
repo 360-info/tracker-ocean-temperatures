@@ -1,10 +1,10 @@
 
-# workflow to test sverto
+# workflow to update monthly ocean temps
 
 on:
-  # check at 9am/3pm AEST from 14-20th of the month
+  # check at 9am AEST every day of the month
   schedule:
-    - cron: '0 0,1,2,3,4,5,23 14,15,16,17,18,19,20 * *'
+    - cron: '0 23 * * *'
   workflow_dispatch:
     inputs:
       overwrite:
@@ -50,15 +50,16 @@ jobs:
         id: check-update
         run: Rscript analysis-oceantemps/check-monthly.r
       
-      # analysis sets env.MONTHLY_UPDATED=true and end.MONTHLY_UPDATE_TIME=...
+      # analysis sets env.MONTHLY_UPDATED=TRUE and end.MONTHLY_UPDATE_TIME=...
       # when it successfully runs
+      # (R puts out uppercase strings for env vars, not actual bools)
 
       - name: Run the analysis (scheduled update)
-        if: github.event_name == 'schedule' && env.MONTHLY_IS_STALE
+        if: github.event_name == 'schedule' && (env.MONTHLY_IS_STALE == 'TRUE')
         run: Rscript analysis-oceantemps/ingest-monthly.r --overwrite=true
 
       - name: Run the analysis (manual)
-        if: github.event_name == 'workflow_dispatch' && (env.MONTHLY_IS_STALE || inputs.overwrite)
+        if: github.event_name == 'workflow_dispatch' && (env.MONTHLY_IS_STALE == 'TRUE') || inputs.overwrite
         run: |
           Rscript analysis-oceantemps/ingest-monthly.r \
             --overwrite=${{ inputs.overwrite }}
@@ -71,7 +72,7 @@ jobs:
           git add data/monthly/*
           git add data/monthly-all.csv
           git add data/last-monthly-update.txt
-          git diff-index --quiet HEAD ||commit -m "Ingest new results via GitHub Actions"
+          git diff-index --quiet HEAD || git commit -m "Ingest new results via GitHub Actions"
           git push
 
       - name: Update Slack
@@ -83,7 +84,7 @@ jobs:
             {
               "event_type": "${{ github.event_name }}",
               "run_end": "${{ env.MONTHLY_RUN_END }}",
-              "outcome_emoji": "${{ (!env.MONTHLY_IS_STALE) && '⏰' || env.MONTHLY_UPDATED && '✅' || '❓' }}",
-              "outcome_long": "${{ (!env.MONTHLY_IS_STALE) && 'Update skipped (no new obs)' || env.MONTHLY_UPDATED && 'New observations added!' || 'Workflow successfully executed, but the analysis script did not sign off properly. Something may not be right—this should be followed up.' }}",
+              "outcome_emoji": "${{ (env.MONTHLY_IS_STALE == 'FALSE') && '⏰' || (env.MONTHLY_UPDATED == 'TRUE') && '✅' || '❓' }}",
+              "outcome_long": "${{ (env.MONTHLY_IS_STALE == 'FALSE') && 'Update skipped (no new obs)' || (env.MONTHLY_UPDATED == 'TRUE') && 'New observations added!' || 'Workflow successfully executed, but the analysis script did not sign off properly. Something may not be right—this should be followed up.' }}",
               "workflow_name": "Ocean data tracker: monthly ingest"
             }

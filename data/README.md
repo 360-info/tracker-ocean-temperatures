@@ -60,7 +60,7 @@ We use this data to surface the tracker on dataset searches like [Google Dataset
     <tr>
       <td>sameAs</td>
       <td>
-        <code itemprop="sameAs">https://github.com/360-info/tracker-ocean-temperatures/tree/main/data</code>
+        <code itemprop="sameAs">https://github.com/360-info/tracker-ocean-temperatures/blob/main/data/README.md</code>
       </td>
     </tr>
     <tr>

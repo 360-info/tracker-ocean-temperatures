@@ -105,5 +105,38 @@ We use this data to surface the tracker on dataset searches like [Google Dataset
         <code itemprop="keywords">sst</code>
       </td>
     </tr>
+    <tr>
+      <td>creator</td>
+      <td>
+        <div itemscope itemtype="http://schema.org/Organization" itemprop="creator">
+          <table>
+            <tr>
+              <th>property</th>
+              <th>value</th>
+            </tr>
+            <tr>
+              <td>@type</td>
+              <td><code itemprop="@type">Organization</code></td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td><code itemprop="name">360info</code></td>
+            </tr>
+            <tr>
+              <td>sameAs</td>
+              <td><code itemprop="sameAs">https://360info.org</code></td>
+            </tr>
+            <tr>
+              <td>logo</td>
+              <td><code itemprop="logo">https://360info.org/wp-content/uploads/2023/03/360-Logos_HD_BLACK_TAG.png</code></td>
+            </tr>
+            <tr>
+              <td>publishingPrinciples</td>
+              <td><code itemprop="publishingPrinciples">https://360info.org/about-us/editorial-policies/</code></td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
   </table>
 </div>

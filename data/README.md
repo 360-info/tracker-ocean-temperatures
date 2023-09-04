@@ -34,3 +34,79 @@ Masks are from [Fay, A. R., & McKinley, G. A. (2014)](https://doi.org/10.5194/es
 - `boxes.csv` defines regions using latitude-longitude boxes
 
 `last-monthly-update.text` is a datestamp of the time of the last update on NOAA's end. We save this at the end of an update to avoid unnecessary updates when no new data is available.
+
+## Dataset metadata
+
+We use this data to surface the tracker on dataset searches like [Google Dataset Search](https://datasetsearch.research.google.com/).
+
+<div itemscope itemtype="http://schema.org/Dataset">
+  <table>
+    <tr>
+      <th>property</th>
+      <th>value</th>
+    </tr>
+    <tr>
+      <td>name</td>
+      <td>
+        <code itemprop="name">Ocean surface temperature tracker</code>
+      </td>
+    </tr>
+    <tr>
+      <td>description</td>
+      <td>
+        <code itemprop="description">Monthly timeseries of average surface temperatures across
+          oceans, seas and the globe. This dataset updates regularly based on upstream updates from
+          [NOAA PSL's OI SST v2](https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.highres.html)
+          .</code>
+      </td>
+    </tr>
+    <tr>
+      <td>sameAs</td>
+      <td>
+        <code itemprop="sameAs">https://github.com/360-info/tracker-ocean-temperatures/tree/main/data</code>
+      </td>
+    </tr>
+    <tr>
+      <td>license</td>
+      <td>
+        <code itemprop="license">https://creativecommons.org/licenses/by/4.0/</code>
+      </td>
+    </tr>
+    <tr>
+      <td>isAccessibleForFree</td>
+      <td>
+        <code itemprop="isAccessibleForFree">true</code>
+      </td>
+    </tr>
+    <tr>
+      <td>keywords</td>
+      <td>
+        <code itemprop="keywords">ocean</code>
+      </td>
+    </tr>
+    <tr>
+      <td>keywords</td>
+      <td>
+        <code itemprop="keywords">climate change</code>
+      </td>
+    </tr>
+    <tr>
+      <td>keywords</td>
+      <td>
+        <code itemprop="keywords">global warming</code>
+      </td>
+    </tr>
+    <tr>
+      <td>keywords</td>
+      <td>
+        <code itemprop="keywords">sea surface temperature</code>
+      </td>
+    </tr>
+    <tr>
+      <td>keywords</td>
+      <td>
+        <code itemprop="keywords">sst</code>
+      </td>
+    </tr>
+  </table>
+</div>

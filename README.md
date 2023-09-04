@@ -56,51 +56,100 @@ We use this data to surface the tracker on dataset searches like [Google Dataset
     </tr>
     <tr>
       <td>name</td>
-      <td><code itemprop="name">Ocean surface temperature tracker</code></td>
+      <td>
+        <code itemprop="name">Ocean surface temperature tracker</code>
+      </td>
     </tr>
-      <tr>
+    <tr>
       <td>description</td>
-      <td><code itemprop="description">Monthly timeseries of average surface temperatures across oceans, seas and the globe. This dataset updates regularly based on upstream updates from [NOAA PSL's OI SST v2](https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.highres.html) .</code></td>
+      <td>
+        <code itemprop="description">Monthly timeseries of average surface temperatures across oceans, seas and the globe. This dataset updates regularly based on upstream updates from NOAA PSL's OISST v2 dataset.</code>
+      </td>
     </tr>
-    </tr>
-      <tr>
+    <tr>
       <td>sameAs</td>
-      <td><code itemprop="sameAs">https://github.com/360-info/tracker-ocean-temperatures</code></td>
+      <td>
+        <code itemprop="sameAs">https://github.com/360-info/tracker-ocean-temperatures/tree/main/data</code>
+      </td>
     </tr>
-    </tr>
-      <tr>
+    <tr>
       <td>license</td>
-      <td><code itemprop="license">https://creativecommons.org/licenses/by/4.0/</code></td>
+      <td>
+        <code itemprop="license">https://creativecommons.org/licenses/by/4.0/</code>
+      </td>
     </tr>
-    </tr>
-      <tr>
+    <tr>
       <td>isAccessibleForFree</td>
-      <td><code itemprop="isAccessibleForFree">true</code></td>
+      <td>
+        <code itemprop="isAccessibleForFree">true</code>
+      </td>
     </tr>
+    <tr>
+      <td>temporalCoverage</td>
+      <td><code itemprop="temporalCoverage">1981-09-01/..</code></td>
     </tr>
-      <tr>
+    <tr>
       <td>keywords</td>
-      <td><code itemprop="keywords">ocean</code></td>
+      <td>
+        <code itemprop="keywords">ocean</code>
+      </td>
     </tr>
-    </tr>
-      <tr>
+    <tr>
       <td>keywords</td>
-      <td><code itemprop="keywords">climate change</code></td>
+      <td>
+        <code itemprop="keywords">climate change</code>
+      </td>
     </tr>
-    </tr>
-      <tr>
+    <tr>
       <td>keywords</td>
-      <td><code itemprop="keywords">global warming</code></td>
+      <td>
+        <code itemprop="keywords">global warming</code>
+      </td>
     </tr>
-    </tr>
-      <tr>
+    <tr>
       <td>keywords</td>
-      <td><code itemprop="keywords">sea surface temperature</code></td>
+      <td>
+        <code itemprop="keywords">sea surface temperature</code>
+      </td>
     </tr>
-    </tr>
-      <tr>
+    <tr>
       <td>keywords</td>
-      <td><code itemprop="keywords">sst</code></td>
+      <td>
+        <code itemprop="keywords">sst</code>
+      </td>
+    </tr>
+    <tr>
+      <td>creator</td>
+      <td>
+        <div itemscope itemtype="http://schema.org/Organization" itemprop="creator">
+          <table>
+            <tr>
+              <th>property</th>
+              <th>value</th>
+            </tr>
+            <tr>
+              <td>@type</td>
+              <td><code itemprop="@type">Organization</code></td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td><code itemprop="name">360info</code></td>
+            </tr>
+            <tr>
+              <td>sameAs</td>
+              <td><code itemprop="sameAs">https://360info.org</code></td>
+            </tr>
+            <tr>
+              <td>logo</td>
+              <td><code itemprop="logo">https://360info.org/wp-content/uploads/2023/03/360-Logos_HD_BLACK_TAG.png</code></td>
+            </tr>
+            <tr>
+              <td>publishingPrinciples</td>
+              <td><code itemprop="publishingPrinciples">https://360info.org/about-us/editorial-policies/</code></td>
+            </tr>
+          </table>
+        </div>
+      </td>
     </tr>
   </table>
 </div>

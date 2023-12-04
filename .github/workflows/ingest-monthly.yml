@@ -75,10 +75,6 @@ jobs:
           git diff-index --quiet HEAD || git commit -m "Ingest new results via GitHub Actions"
           git push
 
-      # - name: Get current date
-      #   id: date
-      #   run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-
       # make a release if there's new data
       - name: Publish release
         if: env.MONTHLY_UPDATED == 'TRUE'

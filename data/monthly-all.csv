@@ -505,7 +505,7 @@ arabian_sea,2023-07-01,28.19
 arabian_sea,2023-08-01,28.05
 arabian_sea,2023-09-01,28.55
 arabian_sea,2023-10-01,29.15
-arabian_sea,2023-11-01,29.18
+arabian_sea,2023-11-01,29.16
 arabian_sea,NA,NA
 arctic_ocean,1981-09-01,0.33
 arctic_ocean,1981-10-01,-0.53
@@ -1013,7 +1013,7 @@ arctic_ocean,2023-07-01,0.37
 arctic_ocean,2023-08-01,1.78
 arctic_ocean,2023-09-01,1.34
 arctic_ocean,2023-10-01,0.04
-arctic_ocean,2023-11-01,-0.81
+arctic_ocean,2023-11-01,-0.8
 arctic_ocean,NA,NA
 atlantic_ocean,1981-09-01,21.99
 atlantic_ocean,1981-10-01,21.6
@@ -1521,7 +1521,7 @@ atlantic_ocean,2023-07-01,23.02
 atlantic_ocean,2023-08-01,23.3
 atlantic_ocean,2023-09-01,23.15
 atlantic_ocean,2023-10-01,22.63
-atlantic_ocean,2023-11-01,22.27
+atlantic_ocean,2023-11-01,22.28
 atlantic_ocean,NA,NA
 bay_of_bengal_and_andaman_sea,1981-09-01,28.05
 bay_of_bengal_and_andaman_sea,1981-10-01,28.48
@@ -2029,7 +2029,7 @@ bay_of_bengal_and_andaman_sea,2023-07-01,29.21
 bay_of_bengal_and_andaman_sea,2023-08-01,29.2
 bay_of_bengal_and_andaman_sea,2023-09-01,29.05
 bay_of_bengal_and_andaman_sea,2023-10-01,29.15
-bay_of_bengal_and_andaman_sea,2023-11-01,29.22
+bay_of_bengal_and_andaman_sea,2023-11-01,29.17
 bay_of_bengal_and_andaman_sea,NA,NA
 global_60s_to_60n,1981-09-01,20.06
 global_60s_to_60n,1981-10-01,19.95
@@ -3553,7 +3553,7 @@ indian_ocean,2023-07-01,24.95
 indian_ocean,2023-08-01,24.66
 indian_ocean,2023-09-01,24.8
 indian_ocean,2023-10-01,25.29
-indian_ocean,2023-11-01,25.94
+indian_ocean,2023-11-01,25.91
 indian_ocean,NA,NA
 iod_east,1981-09-01,27.87
 iod_east,1981-10-01,28.26
@@ -4061,7 +4061,7 @@ iod_east,2023-07-01,28.73
 iod_east,2023-08-01,28.16
 iod_east,2023-09-01,27.76
 iod_east,2023-10-01,27.55
-iod_east,2023-11-01,28.44
+iod_east,2023-11-01,28.35
 iod_east,NA,NA
 iod_west,1981-09-01,27.11
 iod_west,1981-10-01,27.89
@@ -4569,7 +4569,7 @@ iod_west,2023-07-01,27.81
 iod_west,2023-08-01,28.07
 iod_west,2023-09-01,28.37
 iod_west,2023-10-01,28.93
-iod_west,2023-11-01,29.32
+iod_west,2023-11-01,29.29
 iod_west,NA,NA
 mediterranean_sea,1981-09-01,24.4
 mediterranean_sea,1981-10-01,22.77
@@ -5077,7 +5077,7 @@ mediterranean_sea,2023-07-01,26.58
 mediterranean_sea,2023-08-01,27.06
 mediterranean_sea,2023-09-01,25.95
 mediterranean_sea,2023-10-01,24.52
-mediterranean_sea,2023-11-01,21.57
+mediterranean_sea,2023-11-01,21.61
 mediterranean_sea,NA,NA
 nino1,1981-09-01,19.53
 nino1,1981-10-01,19.67
@@ -5585,7 +5585,7 @@ nino1,2023-07-01,24.53
 nino1,2023-08-01,23.77
 nino1,2023-09-01,23.08
 nino1,2023-10-01,22.8
-nino1,2023-11-01,23.11
+nino1,2023-11-01,23.15
 nino1,NA,NA
 nino2,1981-09-01,25.63
 nino2,1981-10-01,25.46
@@ -6093,7 +6093,7 @@ nino2,2023-07-01,28.16
 nino2,2023-08-01,27.95
 nino2,2023-09-01,27.76
 nino2,2023-10-01,27.71
-nino2,2023-11-01,27.65
+nino2,2023-11-01,27.67
 nino2,NA,NA
 nino3,1981-09-01,24.55
 nino3,1981-10-01,24.81
@@ -6601,7 +6601,7 @@ nino3,2023-07-01,27.44
 nino3,2023-08-01,27.13
 nino3,2023-09-01,27.03
 nino3,2023-10-01,27.04
-nino3,2023-11-01,27.23
+nino3,2023-11-01,27.2
 nino3,NA,NA
 nino3_4,1981-09-01,26.34
 nino3_4,1981-10-01,26.47
@@ -7617,7 +7617,7 @@ nino4,2023-07-01,29.51
 nino4,2023-08-01,29.66
 nino4,2023-09-01,29.79
 nino4,2023-10-01,29.94
-nino4,2023-11-01,30.11
+nino4,2023-11-01,30.12
 nino4,NA,NA
 north_atlantic,1981-09-01,22.23
 north_atlantic,1981-10-01,21.1
@@ -8125,7 +8125,7 @@ north_atlantic,2023-07-01,23.05
 north_atlantic,2023-08-01,23.91
 north_atlantic,2023-09-01,23.73
 north_atlantic,2023-10-01,22.61
-north_atlantic,2023-11-01,21.15
+north_atlantic,2023-11-01,21.14
 north_atlantic,NA,NA
 north_pacific,1981-09-01,23.55
 north_pacific,1981-10-01,22.57
@@ -9141,7 +9141,7 @@ pacific_ocean,2023-07-01,23.56
 pacific_ocean,2023-08-01,23.87
 pacific_ocean,2023-09-01,23.82
 pacific_ocean,2023-10-01,23.55
-pacific_ocean,2023-11-01,23.27
+pacific_ocean,2023-11-01,23.26
 pacific_ocean,NA,NA
 south_atlantic,1981-09-01,21.67
 south_atlantic,1981-10-01,22.28
@@ -9649,7 +9649,7 @@ south_atlantic,2023-07-01,22.99
 south_atlantic,2023-08-01,22.48
 south_atlantic,2023-09-01,22.37
 south_atlantic,2023-10-01,22.67
-south_atlantic,2023-11-01,23.8
+south_atlantic,2023-11-01,23.81
 south_atlantic,NA,NA
 south_pacific,1981-09-01,22.22
 south_pacific,1981-10-01,22.54
@@ -10665,5 +10665,5 @@ southern_ocean,2023-07-01,5.32
 southern_ocean,2023-08-01,4.96
 southern_ocean,2023-09-01,4.88
 southern_ocean,2023-10-01,5.03
-southern_ocean,2023-11-01,5.52
+southern_ocean,2023-11-01,5.54
 southern_ocean,NA,NA

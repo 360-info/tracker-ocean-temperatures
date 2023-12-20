@@ -13,7 +13,7 @@ library(janitor)
 library(glue)
 library(purrr)
 library(here)
-source(here("analysis-oceantemps", "util.r"))
+source(here("R", "util.r"))
 
 # set cdo path, as {ClimateOperators} usually can't find it on PATH properly
 # (default to homebrrew's version if we're not on github actions)

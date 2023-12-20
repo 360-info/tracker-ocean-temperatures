@@ -26,7 +26,7 @@ The daily data are updated each day from NOAA, while the monthly data are update
 
 ## 💻 Reproduce the analysis
 
-The analysis scripts in this project are designed to run in the cloud using GitHub Actions. The GitHub Actions workflow files are in the [`.github/workflows`](.github/workflows) folder; the R scripts themselves are in [`analysis-oceantemps`](analysis-oceantemps).
+The analysis scripts in this project are designed to run in the cloud using GitHub Actions. The GitHub Actions workflow files are in the [`.github/workflows`](.github/workflows) folder; the R scripts themselves are in [`/R`](R).
 
 The chart comes in two flavours:
 

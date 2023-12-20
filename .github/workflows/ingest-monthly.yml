@@ -48,7 +48,7 @@ jobs:
       # sets env.MONTHLY_IS_STALE=TRUE if new obs are available
       - name: Check if update is required
         id: check-update
-        run: Rscript analysis-oceantemps/check-monthly.r
+        run: Rscript R/check-monthly.r
       
       # analysis sets env.MONTHLY_UPDATED=TRUE and end.MONTHLY_UPDATE_TIME=...
       # when it successfully runs
@@ -56,12 +56,12 @@ jobs:
 
       - name: Run the analysis (scheduled update)
         if: github.event_name == 'schedule' && (env.MONTHLY_IS_STALE == 'TRUE')
-        run: Rscript analysis-oceantemps/ingest-monthly.r --overwrite=true
+        run: Rscript R/ingest-monthly.r --overwrite=true
 
       - name: Run the analysis (manual)
         if: github.event_name == 'workflow_dispatch' && (env.MONTHLY_IS_STALE == 'TRUE') || inputs.overwrite
         run: |
-          Rscript analysis-oceantemps/ingest-monthly.r \
+          Rscript R/ingest-monthly.r \
             --overwrite=${{ inputs.overwrite }}
       
       # commit and push

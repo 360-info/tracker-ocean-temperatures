@@ -1,0 +1,26 @@
+{
+  "upload_type": "dataset",
+  "creators": [
+    {
+        "orcid": "0000-0002-5024-6207",
+        "affiliation": "360info",
+        "name": "James Goldie"
+    }
+  ],
+  "description": "<p>Tracks the monthly average sea surface temperatures using the <a href=\"https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.highres.html\">OISST v2</a> dataset, created by NASA's <a href=\"https://psl.noaa.gov\">Physical Sciences Laboratory</a>.</p><p>OISST updates both daily and monthly (we use the monthly updates here). The dataset <a href=\"https://www.ncei.noaa.gov/products/optimum-interpolation-sst\">blends sea surface temperature observations</a> from satellites, ships, buoys and Argo floats.</p>",
+  "license": "cc-by",
+  "keywords": [
+    "ocean",
+    "sst",
+    "ocean surface temperature",
+    "atlantic ocean",
+    "pacific ocean",
+    "indian ocean",
+    "arabian sea",
+    "arctic ocean",
+    "bay of bengal",
+    "andaman sea",
+    "mediterranian sea",
+    "southern ocean"
+  ],
+}

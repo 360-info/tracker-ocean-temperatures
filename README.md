@@ -1,8 +1,10 @@
-# [Ocean temperature tracker]
+# Ocean temperature tracker
 
 Updates with ocean temperatures from around the world. Daily and monthly updates are available.
 
 ## 📦 [Get the data](data) • 📊 [Get the chart](https://aug2023.360info-tracker-ocean-temperatures.pages.dev/vis-monthly-pub)
+
+[![](https://zenodo.org/badge/DOI/10.5281/zenodo.10253800.svg)](https://doi.org/10.5281/zenodo.10253800)
 
 ## ♻️ Use + Remix rights
 

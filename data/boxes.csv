@@ -8,3 +8,5 @@ IOD west,50,70,-10,10
 IOD east,90,110,-10,0
 Global (60S to 60N),-180,180,-60,60
 Global (85S to 85N),-180,180,-85,85
+Northern Australia,90,160,-25,0
+Gulf of Mexico,-100,-80,16,32

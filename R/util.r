@@ -7,6 +7,15 @@ library(glue)
 library(ClimateOperators)
 library(here)
 
+# write_to_gha_env: write a key-value pair out to the github actions environment
+# variables
+write_to_gha_env <- function(key, value) {
+  system2("echo", c(
+    paste0(key, "=", value),
+    ">>",
+    "$GITHUB_ENV"))
+}
+
 #' Extract and validate arg values using a regex pattern
 extract_arg <- function(args, pattern) {
   args |> str_extract(pattern, group = 1) |> na.omit()
@@ -27,6 +36,75 @@ get_current_monthly_dt <- function() {
     filter(Name == "sst.mon.mean.nc") |>
     pull(`Last modified`) |>
     ymd_hm()
+}
+
+# scrape the current monthly update date-time from nasa psl
+get_current_daily_dt <- function() {
+  "https://downloads.psl.noaa.gov/Datasets/noaa.oisst.v2.highres/" |>
+    read_html() |>
+    html_element("#indexlist") |>
+    html_table() |>
+    select(Name, `Last modified`) |>
+    filter(Name == "sst.day.mean.nc") |>
+
+    pull(`Last modified`) |>
+    ymd_hm()
+}
+
+# scrape the latest daily update date-time from nasa psl
+# TODO - what if we're doing several years (eg. manual update)?
+get_current_daily_dt <- function() {
+  "https://downloads.psl.noaa.gov/Datasets/noaa.oisst.v2.highres/" |>
+    read_html() |>
+    html_element("#indexlist") |>
+    html_table() |>
+    select(Name, `Last modified`) |>
+    filter(Name == str_detect(Name, regex("sst\\.day\\.mean\\.\\d{4}\\.nc"))) |>
+    # TODO - get latest year?
+    pull(`Last modified`) |>
+    ymd_hm()
+}
+
+#' Determine whether new monthly observations are available
+#' 
+#' @return A boolean. True if new obs are available for download, or if obs have
+#' never been downloaded
+check_monthly_obs_stale <- function() {
+  last_update_path <- here("data", "last-monthly-update.txt")
+  if(!file.exists(last_update_path)) {
+    return(TRUE)
+  }
+
+  return(
+    get_current_monthly_dt() > (last_update_path |> readLines() |> ymd_hms())
+  )
+}
+
+#' Determine whether new monthly observations are available
+#' 
+#' @return A boolean. True if new obs are available for download, or if obs have
+#' never been downloaded
+check_daily_obs_stale <- function() {
+
+  # definitely stale if we don't have any update record
+  last_update_path <- here("data", "last-daily-update.csv")
+  if(!file.exists(last_update_path)) {
+    return(TRUE)
+  }
+
+  # check the date of the last update and what the latest year of it was
+  last_update      <- read_csv(last_update_path)
+  last_update_year <- last_update$year
+  last_update_date <- last_update$date
+
+  # compare with the current data available remotely
+  remote_latest      <- get_current_daily_dt()
+  remote_latest_year <- remote_latest$year
+  remote_latest_date <- remote_latest$date
+
+  return(
+    (remote_latest_year > last_update_year) ||
+    (remote_latest_date > last_update_date))
 }
 
 #' Return the path of a mask file remapped to the grid of iven observations

@@ -61,7 +61,7 @@ jobs:
         run: Rscript R/ingest-monthly.r --overwrite=true
 
       - name: Run the analysis (manual)
-        if: github.event_name == 'workflow_dispatch' && (env.MONTHLY_IS_STALE == 'TRUE') || inputs.overwrite
+        if: github.event_name == 'workflow_dispatch' || inputs.overwrite
         run: |
           Rscript R/ingest-monthly.r \
             --overwrite=${{ inputs.overwrite }}

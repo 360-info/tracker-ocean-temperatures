@@ -7,6 +7,19 @@ library(glue)
 library(ClimateOperators)
 library(here)
 
+oisst_root <- "https://downloads.psl.noaa.gov/Datasets/noaa.oisst.v2.highres"
+daily_file_regex <- "sst\\.day\\.mean\\.\\d{4}\\.nc"
+monthly_file <- "sst.mon.mean.nc"
+
+# write_to_gha_env: write a key-value pair out to the github actions environment
+# variables
+write_to_gha_env <- function(key, value) {
+  system2("echo", c(
+    paste0(key, "=", value),
+    ">>",
+    "$GITHUB_ENV"))
+}
+
 #' Extract and validate arg values using a regex pattern
 extract_arg <- function(args, pattern) {
   args |> str_extract(pattern, group = 1) |> na.omit()
@@ -19,17 +32,76 @@ set_last_monthly_update_dt <- function(dt) {
 
 # scrape the current monthly update date-time from nasa psl
 get_current_monthly_dt <- function() {
-  "https://downloads.psl.noaa.gov/Datasets/noaa.oisst.v2.highres/" |>
+  oisst_root |>
     read_html() |>
     html_element("#indexlist") |>
     html_table() |>
     select(Name, `Last modified`) |>
-    filter(Name == "sst.mon.mean.nc") |>
+    filter(Name == monthly_file) |>
     pull(`Last modified`) |>
     ymd_hm()
 }
 
-#' Return the path of a mask file remapped to the grid of iven observations
+# scrape the current monthly update date-time from nasa psl
+get_current_daily_files <- function() {
+  oisst_root |>
+    read_html() |>
+    html_element("#indexlist") |>
+    html_table() |>
+    select(Name, `Last modified`) |>
+    filter(str_detect(Name, regex(daily_file_regex)))
+}
+
+# scrape the current monthly update date-time from nasa psl
+get_current_daily_dt <- function() {
+  get_current_daily_files() |>
+    pull(`Last modified`) |>
+    ymd_hm()
+}
+
+#' Determine whether new monthly observations are available
+#' 
+#' @return A boolean. True if new obs are available for download, or if obs have
+#' never been downloaded
+check_monthly_obs_stale <- function() {
+  last_update_path <- here("data", "last-monthly-update.txt")
+  if(!file.exists(last_update_path)) {
+    return(TRUE)
+  }
+
+  return(
+    get_current_monthly_dt() > (last_update_path |> readLines() |> ymd_hms())
+  )
+}
+
+#' Determine whether new monthly observations are available
+#' 
+#' @return A boolean. True if new obs are available for download, or if obs have
+#' never been downloaded
+check_daily_obs_stale <- function() {
+
+  # definitely stale if we don't have any update record
+  last_update_path <- here("data", "last-daily-update.csv")
+  if(!file.exists(last_update_path)) {
+    return(TRUE)
+  }
+
+  # check the date of the last update and what the latest year of it was
+  last_update      <- read_csv(last_update_path)
+  last_update_year <- last_update$year
+  last_update_date <- last_update$date
+
+  # compare with the current data available remotely
+  remote_latest      <- get_current_daily_dt()
+  remote_latest_year <- remote_latest$year
+  remote_latest_date <- remote_latest$date
+
+  return(
+    (remote_latest_year > last_update_year) ||
+    (remote_latest_date > last_update_date))
+}
+
+#' Return the path of a mask file remapped to the grid of given observations
 #' 
 #' Our masks are on a 1° grid, but our obs are 0.25°x0.25°. This function
 #' regrids the mask file and returns the (temporary) path to the new file.
@@ -88,7 +160,7 @@ make_lonlat_box_mask <- function(lon_min, lon_max, lat_min, lat_max,
 extract_box_timeseries <- function(lon_min, lon_max, lat_min, lat_max,
   sst_path, mask_path) {
 
-  message(paste("Extracting box: longitude", lon_min, "to", lon_max,
+  message(paste("Extracting ", name, " box: longitude", lon_min, "to", lon_max,
     "latitude", lat_min, "to", lat_max))
 
   # create a mask just for the lon-lat box (var: "seamask")
@@ -134,7 +206,7 @@ extract_box_timeseries <- function(lon_min, lon_max, lat_min, lat_max,
 #' @return A tibble with two columns: `date` and `temperature`
 extract_basin_timeseries <- function(ocean, regions, sst_path, mask_path) {
 
-  message(paste("Extracting", ocean, "basin, regions", regions))
+  message(paste("Extracting", ocean, "basin: regions", regions))
 
   region <- str_split(regions, ",\\s?") |> unlist()
   region_expression <- glue("({ocean}=={region})") |> paste(collapse = " || ")
@@ -169,4 +241,55 @@ extract_basin_timeseries <- function(ocean, regions, sst_path, mask_path) {
     mutate(
       date = as.Date(date),
       temperature = round(as.numeric(temperature), 2))
+}
+
+#' Download and process a year's worth of saily SSTs from NOAA.
+#' 
+#' @param missing_year The year to download dailies for
+#' @return A list with two elements:
+#' - basins: a data frame of observations for ocean basin regions
+#' - boxes: a data frame of observations for box-based regions
+process_year_of_dailies <- function(missing_year) {
+
+  # 1. download year
+  options(timeout = 10000)
+  daily_url <- glue("{oisst_root}/sst.day.mean.{missing_year}.nc")
+  daily_path <- tempfile(pattern = "daily-", fileext = ".nc")
+  download.file(daily_url, daily_path)
+  
+  stopifnot("Error: problem downloading daily obs from NASA PSL" =
+    file.exists(daily_path))
+
+  # 2. regrid region mask to match obs (we can reuse this mask file)
+  mask_path <- get_regridded_mask_path(daily_path)
+
+  # 3a. extract series from regions...
+  here("data", "basins.csv") |>
+    read_csv(col_types = "ccc") |>
+    mutate(
+      series = map2(
+        mask_ocean, mask_regions, extract_basin_timeseries,
+        sst_path = daily_path, mask_path = mask_path),
+      name_safe = make_clean_names(name)) |>
+    select(name_safe, series) ->
+  basin_series
+
+  # 3b. ... and boxes
+  here("data", "boxes.csv") |>
+    read_csv(col_types = "ccccc") |>
+    mutate(
+      series = pmap(
+        list(lon_min, lon_max, lat_min, lat_max),
+        extract_box_timeseries,
+        sst_path = daily_path, mask_path = mask_path),
+      name_safe = make_clean_names(name)) |>
+    select(name_safe, series) ->
+  box_series
+
+  message("BASINS:")
+  print(basin_series)
+  message("BOXES:")
+  print(box_series)
+
+  return(list(basins = basin_series, boxes = box_series))
 }

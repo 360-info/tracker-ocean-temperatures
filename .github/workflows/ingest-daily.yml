@@ -1,10 +1,10 @@
 
-# workflow to update monthly ocean temps
+# workflow to update daily ocean temps
 
 on:
-  # check at 9am AEST every day of the month
+  # check at 7am AEST every day of the month
   schedule:
-    - cron: '0 23 * * *'
+    - cron: '0 21 * * *'
   workflow_dispatch:
     inputs:
       overwrite:
@@ -12,7 +12,7 @@ on:
         type: boolean
         default: false
 
-name: Ingest monthly temperatures
+name: Ingest daily temperatures
 
 jobs:
   ingest:
@@ -47,37 +47,36 @@ jobs:
       - name: Report cdo location
         run: echo CDO location is $(which cdo)
 
-      # sets env.MONTHLY_IS_STALE=TRUE if new obs are available
+      # sets env.DAILY_IS_STALE=TRUE if new obs are available
       - name: Check if update is required
         id: check-update
-        run: Rscript R/check-monthly.r
+        run: Rscript R/check-daily.r
       
-      # analyses sets env.MONTHLY_UPDATED=TRUE and end.MONTHLY_UPDATE_TIME=...
+      # analyses sets env.DAILY_UPDATED=TRUE and end.DAILY_UPDATE_TIME=...
       # when they successfully run
       # (R puts out uppercase strings for env vars, not actual bools)
 
-      - name: Run the monthly analysis (scheduled update)
-        if: github.event_name == 'schedule' && (env.MONTHLY_IS_STALE == 'TRUE')
-        run: Rscript R/ingest-monthly.r --overwrite=true
+      - name: Run the daily analysis (scheduled update)
+        if: github.event_name == 'schedule' && (env.DAILY_IS_STALE == 'TRUE')
+        run: Rscript R/ingest-daily.r --overwrite=true
 
-      - name: Run the monthly analysis (manual)
+      - name: Run the daily analysis (manual)
         if: github.event_name == 'workflow_dispatch' || inputs.overwrite
-        run: Rscript R/ingest-monthly.r --overwrite=${{ inputs.overwrite }}
+        run: Rscript R/ingest-daily.r --overwrite=${{ inputs.overwrite }}
       
       # commit and push
       - name: Commit and push updated results
         run: |
           git config --local user.name actions-user
           git config --local user.email "actions@github.com"
-          git add data/monthly/*
-          git add data/monthly-all.csv
-          git add data/last-monthly-update.txt
+          git add data/daily/*
+          git add data/last-daily-update.txt
           git diff-index --quiet HEAD || git commit -m "Ingest new results via GitHub Actions"
           git push
 
       # make a release if there's new data
       - name: Publish release
-        if: env.MONTHLY_UPDATED == 'TRUE'
+        if: env.DAILY_UPDATED == 'TRUE'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -94,8 +93,8 @@ jobs:
           payload: |
             {
               "event_type": "${{ github.event_name }}",
-              "run_end": "${{ env.MONTHLY_RUN_END }}",
-              "outcome_emoji": "${{ (env.MONTHLY_IS_STALE == 'FALSE') && '⏰' || (env.MONTHLY_UPDATED == 'TRUE') && '✅' || '❓' }}",
-              "outcome_long": "${{ (env.MONTHLY_IS_STALE == 'FALSE') && 'Update skipped (no new obs)' || (env.MONTHLY_UPDATED == 'TRUE') && 'New monthly observations added!' || 'Workflow successfully executed, but the analysis script did not sign off properly. Something may not be right—this should be followed up.' }}",
-              "workflow_name": "Ocean data tracker: monthly ingest"
+              "run_end": "${{ env.DAILY_RUN_END }}",
+              "outcome_emoji": "${{ (env.DAILY_IS_STALE == 'FALSE') && '⏰' || (env.DAILY_UPDATED == 'TRUE') && '✅' || '❓' }}",
+              "outcome_long": "${{ (env.DAILY_IS_STALE == 'FALSE') && 'Update skipped (no new obs)' || (env.DAILY_UPDATED == 'TRUE') && 'New daily observations added!' || 'Workflow successfully executed, but the analysis script did not sign off properly. Something may not be right—this should be followed up.' }}",
+              "workflow_name": "Ocean data tracker: daily ingest"
             }

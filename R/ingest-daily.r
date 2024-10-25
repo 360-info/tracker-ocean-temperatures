@@ -27,7 +27,6 @@ args <- commandArgs(trailingOnly = TRUE)
 
 # --- 1. process cmd line args ------------------------------------------------
 
-
 overwrite <- args |> extract_arg("^--overwrite=(true|false)")
 
 stopifnot(
@@ -37,51 +36,85 @@ stopifnot(
 # convert inputs
 overwrite <- as.logical(toupper(overwrite))
 
-# --- 2. download new data (timeout:15 mins) ----------------------------------
+# --- 1a. which days do we need, considering current obs? ---------------------
 
-monthly_path <- tempfile(pattern = "monthly-", fileext = ".nc")
-options(timeout = 10000)
-download.file(paste(oisst_root, monthly_file, sep = "/"), monthly_path)
+daily_folder <- here("data", "daily")
+daily_files_current <- daily_folder |> list.files(pattern = glob2rx("*.csv"))
 
-# check for unsuccessful downloads
-stopifnot(
-  "Error: problem downloading monthly observations from NASA PSL" =
-    file.exists(monthly_path)
-)
+# get the dates for which we have any missing observations
+# (either because we don't have files for all the marked regions, or because
+# some days are missing)
+basins <- here("data", "basins.csv") |> read_csv()
+boxes <- here("data", "boxes.csv") |> read_csv()
 
-# --- 3. open, crop to ocean basins and calc series ---------------------------
+c(basins$name, boxes$name) |>
+  make_clean_names() |>
+  paste0(".csv") ->
+required_regions
 
-# regrid to 0.25x0.25 to match obs (we can reuse this mask file)
-mask_path <- get_regridded_mask_path(monthly_path)
+required_regions |>
+  setdiff(daily_files_current) ->
+missing_regions
 
-# load list of regions and extract series from each region
-here("data", "basins.csv") |>
-  read_csv(col_types = "ccc") |>
-  mutate(
-    series = map2(
-      mask_ocean, mask_regions, extract_basin_timeseries,
-      sst_path = monthly_path, mask_path = mask_path),
-    name_safe = make_clean_names(name)) |>
-  select(name_safe, series) ->
+# if there are missing regions, download all years from NOAA
+if (length(missing_regions) != 0) {
+  message(
+    "Regions missing - getting all available data from NOAA")
+  get_current_daily_files() |>
+    pull(Name) |>
+    str_extract(regex("\\d{4}")) |>
+    unique() |>
+    as.numeric() ->
+  missing_years
+} else {
+  # if there are NO missing regions, work it out based on the days in the
+  # data for which at least one region is missing data
+  message("No regions missing - getting only NOAA data for missing days")
+  daily_files_current |>
+    tibble(path = _, data = map(path, ~ read_csv(file.path(daily_folder, .x)))) |>
+    unnest(data) |>
+    filter(!is.na(date)) |>
+    pivot_wider(names_from = date, values_from = temperature) |>
+    summarise(across(where(is.numeric), ~ anyNA(.x))) |>
+    pivot_longer(everything(), names_to = "date", values_to = "any_missing") |>
+    filter(any_missing) |>
+    pull(date) |>
+    as.Date() |> 
+    year() |>
+    unique() ->
+  missing_years
+}
+
+# --- 3. download, open and crop: repeat for each missing year ----------------
+
+tibble(year = missing_years) |>
+  mutate(data = map(year, process_year_of_dailies)) |>
+  unnest_wider(data) ->
+all_processed
+
+basin_series <-
+
+all_processed |>
+  pull(basins) |>
+  bind_rows() |>
+  unnest_longer(series) |>
+  unpack(series) |>
+  nest(basins = -name_safe) ->
 basin_series
 
-# now load the boxes and extract series from those
-here("data", "boxes.csv") |>
-  read_csv(col_types = "ccccc") |>
-  mutate(
-    series = pmap(
-      list(lon_min, lon_max, lat_min, lat_max),
-      extract_box_timeseries,
-      sst_path = monthly_path, mask_path = mask_path),
-    name_safe = make_clean_names(name)) |>
-  select(name_safe, series) ->
+all_processed |>
+  pull(boxes) |>
+  bind_rows() |>
+  unnest_longer(series) |>
+  unpack(series) |>
+  nest(boxes = -name_safe) ->
 box_series
 
 # --- 4. if not overwriting, load current data for comparison -----------------
 
 # if we're not overwriting, we need to load current obs and only fill in missing
 # obs
-here("data", "monthly") |>
+here("data", "daily") |>
   list.files(pattern = glob2rx("*.csv"), full.names = TRUE) ->
 current_obs_paths
 
@@ -154,13 +187,13 @@ if (length(current_obs_paths) == 0) {
 }
 
 # write basins and boxes out
-dir.create(here("data", "monthly"), showWarnings = FALSE, recursive = TRUE)
+dir.create(here("data", "daily"), showWarnings = FALSE, recursive = TRUE)
 walk2(
   basin_outputs$series, basin_outputs$name_safe,
-  ~ write_csv(.x, here("data", "monthly", paste0(.y, ".csv"))))
+  ~ write_csv(.x, here("data", "daily", paste0(.y, ".csv"))))
 walk2(
   box_outputs$series, box_outputs$name_safe,
-  ~ write_csv(.x, here("data", "monthly", paste0(.y, ".csv"))))
+  ~ write_csv(.x, here("data", "daily", paste0(.y, ".csv"))))
 
 # now write all basins and boxes out as single csv
 basin_outputs |>
@@ -172,26 +205,26 @@ box_outputs |>
   unpack(series) ->
 box_outputs_long
 
-bind_rows(basin_outputs_long, box_outputs_long) |>
-  rename(region = name_safe) |>
-  arrange(region, date) |>
-  write_csv(here("data", "monthly-all.csv"))
+# bind_rows(basin_outputs_long, box_outputs_long) |>
+#   rename(region = name_safe) |>
+#   arrange(region, date) |>
+#   write_csv(here("data", "daily-all.csv"))
 
 # --- Z. record the update time -----------------------------------------------
 
-new_update_time <- get_current_monthly_dt()
-set_last_monthly_update_dt(as.character(new_update_time))
+new_update_time <- get_current_daily_dt()
+set_last_daily_update_dt(as.character(new_update_time))
 
 system2("echo", c(
-  "MONTHLY_UPDATED=true",
+  "DAILY_UPDATED=true",
   ">>",
   "$GITHUB_ENV"))
 system2("echo", c(
-  paste0("MONTHLY_UPDATE_TIME=", new_update_time),
+  paste0("DAILY_UPDATE_TIME=", new_update_time),
   ">>",
   "$GITHUB_ENV"))
 system2("echo", c(
-  paste0("MONTHLY_RUN_END=", Sys.time()),
+  paste0("DAILY_RUN_END=", Sys.time()),
   ">>",
   "$GITHUB_ENV"))
 message("Successfully updated!")

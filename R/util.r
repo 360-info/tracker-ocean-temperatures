@@ -242,3 +242,54 @@ extract_basin_timeseries <- function(ocean, regions, sst_path, mask_path) {
       date = as.Date(date),
       temperature = round(as.numeric(temperature), 2))
 }
+
+#' Download and process a year's worth of saily SSTs from NOAA.
+#' 
+#' @param missing_year The year to download dailies for
+#' @return A list with two elements:
+#' - basins: a data frame of observations for ocean basin regions
+#' - boxes: a data frame of observations for box-based regions
+process_year_of_dailies <- function(missing_year) {
+
+  # 1. download year
+  options(timeout = 10000)
+  daily_url <- glue("{oisst_root}/sst.day.mean.{missing_year}.nc")
+  daily_path <- tempfile(pattern = "daily-", fileext = ".nc")
+  download.file(daily_url, daily_path)
+  
+  stopifnot("Error: problem downloading daily obs from NASA PSL" =
+    file.exists(daily_path))
+
+  # 2. regrid region mask to match obs (we can reuse this mask file)
+  mask_path <- get_regridded_mask_path(daily_path)
+
+  # 3a. extract series from regions...
+  here("data", "basins.csv") |>
+    read_csv(col_types = "ccc") |>
+    mutate(
+      series = map2(
+        mask_ocean, mask_regions, extract_basin_timeseries,
+        sst_path = daily_path, mask_path = mask_path),
+      name_safe = make_clean_names(name)) |>
+    select(name_safe, series) ->
+  basin_series
+
+  # 3b. ... and boxes
+  here("data", "boxes.csv") |>
+    read_csv(col_types = "ccccc") |>
+    mutate(
+      series = pmap(
+        list(lon_min, lon_max, lat_min, lat_max),
+        extract_box_timeseries,
+        sst_path = daily_path, mask_path = mask_path),
+      name_safe = make_clean_names(name)) |>
+    select(name_safe, series) ->
+  box_series
+
+  message("BASINS:")
+  print(basin_series)
+  message("BOXES:")
+  print(box_series)
+
+  return(list(basins = basin_series, boxes = box_series))
+}

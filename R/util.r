@@ -7,6 +7,10 @@ library(glue)
 library(ClimateOperators)
 library(here)
 
+oisst_root <- "https://downloads.psl.noaa.gov/Datasets/noaa.oisst.v2.highres"
+daily_file_regex <- "sst\\.day\\.mean\\.\\d{4}\\.nc"
+monthly_file <- "sst.mon.mean.nc"
+
 # write_to_gha_env: write a key-value pair out to the github actions environment
 # variables
 write_to_gha_env <- function(key, value) {
@@ -28,39 +32,29 @@ set_last_monthly_update_dt <- function(dt) {
 
 # scrape the current monthly update date-time from nasa psl
 get_current_monthly_dt <- function() {
-  "https://downloads.psl.noaa.gov/Datasets/noaa.oisst.v2.highres/" |>
+  oisst_root |>
     read_html() |>
     html_element("#indexlist") |>
     html_table() |>
     select(Name, `Last modified`) |>
-    filter(Name == "sst.mon.mean.nc") |>
+    filter(Name == monthly_file) |>
     pull(`Last modified`) |>
     ymd_hm()
 }
 
 # scrape the current monthly update date-time from nasa psl
-get_current_daily_dt <- function() {
-  "https://downloads.psl.noaa.gov/Datasets/noaa.oisst.v2.highres/" |>
+get_current_daily_files <- function() {
+  oisst_root |>
     read_html() |>
     html_element("#indexlist") |>
     html_table() |>
     select(Name, `Last modified`) |>
-    filter(Name == "sst.day.mean.nc") |>
-
-    pull(`Last modified`) |>
-    ymd_hm()
+    filter(str_detect(Name, regex(daily_file_regex)))
 }
 
-# scrape the latest daily update date-time from nasa psl
-# TODO - what if we're doing several years (eg. manual update)?
+# scrape the current monthly update date-time from nasa psl
 get_current_daily_dt <- function() {
-  "https://downloads.psl.noaa.gov/Datasets/noaa.oisst.v2.highres/" |>
-    read_html() |>
-    html_element("#indexlist") |>
-    html_table() |>
-    select(Name, `Last modified`) |>
-    filter(Name == str_detect(Name, regex("sst\\.day\\.mean\\.\\d{4}\\.nc"))) |>
-    # TODO - get latest year?
+  get_current_daily_files() |>
     pull(`Last modified`) |>
     ymd_hm()
 }
@@ -107,7 +101,7 @@ check_daily_obs_stale <- function() {
     (remote_latest_date > last_update_date))
 }
 
-#' Return the path of a mask file remapped to the grid of iven observations
+#' Return the path of a mask file remapped to the grid of given observations
 #' 
 #' Our masks are on a 1° grid, but our obs are 0.25°x0.25°. This function
 #' regrids the mask file and returns the (temporary) path to the new file.
@@ -166,7 +160,7 @@ make_lonlat_box_mask <- function(lon_min, lon_max, lat_min, lat_max,
 extract_box_timeseries <- function(lon_min, lon_max, lat_min, lat_max,
   sst_path, mask_path) {
 
-  message(paste("Extracting box: longitude", lon_min, "to", lon_max,
+  message(paste("Extracting ", name, " box: longitude", lon_min, "to", lon_max,
     "latitude", lat_min, "to", lat_max))
 
   # create a mask just for the lon-lat box (var: "seamask")
@@ -212,7 +206,7 @@ extract_box_timeseries <- function(lon_min, lon_max, lat_min, lat_max,
 #' @return A tibble with two columns: `date` and `temperature`
 extract_basin_timeseries <- function(ocean, regions, sst_path, mask_path) {
 
-  message(paste("Extracting", ocean, "basin, regions", regions))
+  message(paste("Extracting", ocean, "basin: regions", regions))
 
   region <- str_split(regions, ",\\s?") |> unlist()
   region_expression <- glue("({ocean}=={region})") |> paste(collapse = " || ")

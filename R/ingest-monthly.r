@@ -1,8 +1,6 @@
 #!/usr/bin/env Rscript
 
 # arguments (all required):
-# - --from=YYYY-MM-DD: first date from which to get observations
-# - --to=YYYY-MM-DD: last date from which to get observations
 # - --overwrite=[true|false]: if true, overwrite existing observations
 
 library(readr)
@@ -37,17 +35,13 @@ stopifnot(
     length(overwrite) == 1)
 
 # convert inputs
-overwrite <- as.logical(overwrite)
+overwrite <- as.logical(toupper(overwrite))
 
 # --- 2. download new data (timeout:15 mins) ----------------------------------
 
-monthly_url <- paste0(
-  "https://downloads.psl.noaa.gov/",
-  "Datasets/noaa.oisst.v2.highres/",
-  "sst.mon.mean.nc")
 monthly_path <- tempfile(pattern = "monthly-", fileext = ".nc")
 options(timeout = 10000)
-download.file(monthly_url, monthly_path)
+download.file(paste(oisst_root, monthly_file, sep = "/"), monthly_path)
 
 # check for unsuccessful downloads
 stopifnot(

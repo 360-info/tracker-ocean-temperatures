@@ -6,8 +6,8 @@ Thumbs.db
 .vscode
 
 # r
-/renv
 .Rhistory
+
 
 # web dev
 /node_modules

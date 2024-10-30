@@ -80,7 +80,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "v$(date +'%Y-%m-%d')" \
+          gh release create "v$(date +'%Y-%m-%d %H:%M:%S')" \
             --repo="$GITHUB_REPOSITORY" \
             --title="Daily and monthly global ocean surface temperatures: v$(date +'%Y-%m-%d')" \
             --generate-notes

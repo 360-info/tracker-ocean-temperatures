@@ -291,5 +291,7 @@ process_year_of_dailies <- function(missing_year) {
   message("BOXES:")
   print(box_series)
 
+  unlink(daily_path)
+
   return(list(basins = basin_series, boxes = box_series))
 }

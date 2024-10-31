@@ -18,5 +18,5 @@ stopifnot(
     !is.na(is_daily_stale))
 
 # save whether obs are stale to env vars $*_IS_STALE for later steps
-message("Are daily obs stale? ", is_monthly_stale)
+message("Are daily obs stale? ", is_daily_stale)
 write_to_gha_env("DAILY_IS_STALE",   is_daily_stale)

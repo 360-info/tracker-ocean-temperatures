@@ -160,7 +160,7 @@ make_lonlat_box_mask <- function(lon_min, lon_max, lat_min, lat_max,
 extract_box_timeseries <- function(lon_min, lon_max, lat_min, lat_max,
   sst_path, mask_path) {
 
-  message(paste("Extracting ", name, " box: longitude", lon_min, "to", lon_max,
+  message(paste("Extracting box: longitude", lon_min, "to", lon_max,
     "latitude", lat_min, "to", lat_max))
 
   # create a mask just for the lon-lat box (var: "seamask")
@@ -263,7 +263,7 @@ process_year_of_dailies <- function(missing_year) {
   # 2. regrid region mask to match obs (we can reuse this mask file)
   mask_path <- get_regridded_mask_path(daily_path)
 
-  # 3a. extract series from regions...
+  # 3a. extract region series from regions...
   here("data", "basins.csv") |>
     read_csv(col_types = "ccc") |>
     mutate(

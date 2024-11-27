@@ -2,9 +2,9 @@
 # workflow to update daily ocean temps
 
 on:
-  # check at 7am AEST every day of the month
+  # check at 12pm AEST every day of the month
   schedule:
-    - cron: '0 21 * * *'
+    - cron: '0 2 * * *'
   workflow_dispatch:
     inputs:
       overwrite:

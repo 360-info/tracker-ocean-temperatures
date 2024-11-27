@@ -82,7 +82,7 @@ jobs:
         run: |
           gh release create "v$(date +'%Y-%m-%d %H:%M:%S')" \
             --repo="$GITHUB_REPOSITORY" \
-            --title="Daily and monthly global ocean surface temperatures: v$(date +'%Y-%m-%d')" \
+            --title="Daily and monthly global ocean surface temperatures: v$(date +'%Y-%m-%d %H:%M:%S')" \
             --generate-notes
 
       - name: Update Slack

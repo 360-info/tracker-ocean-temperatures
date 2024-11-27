@@ -30,6 +30,11 @@ set_last_monthly_update_dt <- function(dt) {
   dt |> writeLines(here("data", "last-monthly-update.txt"))
 }
 
+#' Writes the supplied date-time string out to record the last daily update
+set_last_daily_update_dt <- function(dt) {
+  dt |> writeLines(here("data", "last-daily-update.txt"))
+}
+
 # scrape the current monthly update date-time from nasa psl
 get_current_monthly_dt <- function() {
   oisst_root |>
@@ -56,7 +61,8 @@ get_current_daily_files <- function() {
 get_current_daily_dt <- function() {
   get_current_daily_files() |>
     pull(`Last modified`) |>
-    ymd_hm()
+    ymd_hm() |>
+    max(na.rm = TRUE)
 }
 
 #' Determine whether new monthly observations are available

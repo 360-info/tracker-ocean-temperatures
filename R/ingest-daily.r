@@ -92,14 +92,12 @@ tibble(year = missing_years) |>
   unnest_wider(data) ->
 all_processed
 
-basin_series <-
-
 all_processed |>
   pull(basins) |>
   bind_rows() |>
   unnest_longer(series) |>
   unpack(series) |>
-  nest(basins = -name_safe) ->
+  nest(series = -name_safe) ->
 basin_series
 
 all_processed |>
@@ -107,7 +105,7 @@ all_processed |>
   bind_rows() |>
   unnest_longer(series) |>
   unpack(series) |>
-  nest(boxes = -name_safe) ->
+  nest(series = -name_safe) ->
 box_series
 
 # --- 4. if not overwriting, load current data for comparison -----------------
@@ -194,21 +192,6 @@ walk2(
 walk2(
   box_outputs$series, box_outputs$name_safe,
   ~ write_csv(.x, here("data", "daily", paste0(.y, ".csv"))))
-
-# now write all basins and boxes out as single csv
-basin_outputs |>
-  unnest_longer(series) |>
-  unpack(series) ->
-basin_outputs_long
-box_outputs |>
-  unnest_longer(series) |>
-  unpack(series) ->
-box_outputs_long
-
-# bind_rows(basin_outputs_long, box_outputs_long) |>
-#   rename(region = name_safe) |>
-#   arrange(region, date) |>
-#   write_csv(here("data", "daily-all.csv"))
 
 # --- Z. record the update time -----------------------------------------------
 

@@ -15,7 +15,8 @@ is_daily_stale <- check_daily_obs_stale()
 
 stopifnot(
   "Error: check_daily_obs_stale() returned a missing value. This could indicate a problem connecting to NOAA." =
-    !is.na(is_daily_stale))
+    !is.na(is_daily_stale),
+  "Error: check_daily_obs_stale() returned a value that was not length 1. Report this problem to the developer." = length(is_daily_stale) != 1)
 
 # save whether obs are stale to env vars $*_IS_STALE for later steps
 message("Are daily obs stale? ", is_daily_stale)

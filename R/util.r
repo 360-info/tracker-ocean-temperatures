@@ -10,6 +10,7 @@ library(here)
 oisst_root <- "https://downloads.psl.noaa.gov/Datasets/noaa.oisst.v2.highres"
 daily_file_regex <- "sst\\.day\\.mean\\.\\d{4}\\.nc"
 monthly_file <- "sst.mon.mean.nc"
+select <- dplyr::select
 
 # write_to_gha_env: write a key-value pair out to the github actions environment
 # variables
@@ -93,19 +94,15 @@ check_daily_obs_stale <- function() {
     return(TRUE)
   }
 
-  # check the date of the last update and what the latest year of it was
-  last_update      <- read_csv(last_update_path)
-  last_update_year <- last_update$year
-  last_update_date <- last_update$date
-
+  # check the date of the last update and what the latest year of it was;
   # compare with the current data available remotely
+  last_update      <- readLines(last_update_path)
+  last_update_ymd  <- ymd_hms(last_update)
   remote_latest      <- get_current_daily_dt()
-  remote_latest_year <- remote_latest$year
-  remote_latest_date <- remote_latest$date
 
   return(
-    (remote_latest_year > last_update_year) ||
-    (remote_latest_date > last_update_date))
+    (year(remote_latest) > year(last_update)) ||
+    (date(remote_latest) > date(last_update)))
 }
 
 #' Return the path of a mask file remapped to the grid of given observations

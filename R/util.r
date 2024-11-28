@@ -87,7 +87,7 @@ check_monthly_obs_stale <- function() {
 check_daily_obs_stale <- function() {
 
   # definitely stale if we don't have any update record
-  last_update_path <- here("data", "last-daily-update.csv")
+  last_update_path <- here("data", "last-daily-update.txt")
   if(!file.exists(last_update_path)) {
     message("No previous daily update time found")
     return(TRUE)

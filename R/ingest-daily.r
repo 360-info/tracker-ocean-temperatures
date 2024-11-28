@@ -83,6 +83,10 @@ if (length(missing_regions) != 0) {
     year() |>
     unique() ->
   missing_years
+
+  if (length(missing_years) == 0) {
+    stop("There are no missing years. This likely means that check-daily.r has failed to recognise that the data is up to date - perhaps data/last-daily-update.txt was not correctly committed at the end of the last job. This should resolve on next update.")
+}
 }
 
 # --- 3. download, open and crop: repeat for each missing year ----------------
